@@ -30,6 +30,7 @@
         <spring-boot-starter-thymeleaf.version>2.1.0.RELEASE</spring-boot-starter-thymeleaf.version>
         <pagehelper.spring.boot.starter.version>1.2.3</pagehelper.spring.boot.starter.version>
         <spring-boot-devtools.version>2.1.0.RELEASE</spring-boot-devtools.version>
+        <spring-boot-admin-starter-client.version>2.1.0</spring-boot-admin-starter-client.version>
     </properties>
     <dependencies>
         <!-- SpringBootWeb-->
@@ -120,6 +121,22 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${springfox-swagger2.version}</version>
+        </dependency>
+        <!-- 添加Admin Client监控-->
+        <dependency>
+            <groupId>de.codecentric</groupId>
+            <artifactId>spring-boot-admin-starter-client</artifactId>
+            <version>${spring-boot-admin-starter-client.version}</version>
+        </dependency>
+        <!-- Mail-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <!-- Actuator-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
     </dependencies>
     <build>

@@ -31,6 +31,8 @@
         <pagehelper.spring.boot.starter.version>1.2.3</pagehelper.spring.boot.starter.version>
         <spring-boot-devtools.version>2.1.0.RELEASE</spring-boot-devtools.version>
         <spring-boot-admin-starter-client.version>2.1.0</spring-boot-admin-starter-client.version>
+        <bootstrap.version>3.3.7-1</bootstrap.version>
+        <jquery.version>3.1.1</jquery.version>
     </properties>
     <dependencies>
         <!-- SpringBootWeb-->
@@ -137,6 +139,24 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <!-- Bootstrap-->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>bootstrap</artifactId>
+            <version>${bootstrap.version}</version>
+        </dependency>
+        <!-- jquery-->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>jquery</artifactId>
+            <version>${jquery.version}</version>
+        </dependency>
+        <!-- 省略版本号-->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>webjars-locator</artifactId>
+            <version>0.31</version>
         </dependency>
     </dependencies>
     <build>

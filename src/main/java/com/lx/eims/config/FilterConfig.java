@@ -11,7 +11,6 @@ import org.springframework.web.filter.DelegatingFilterProxy;
  */
 @Configuration
 public class FilterConfig {
-
     @Bean
     public FilterRegistrationBean shiroFilterRegistration() {
         FilterRegistrationBean registration = new FilterRegistrationBean();

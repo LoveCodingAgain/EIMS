@@ -57,7 +57,4 @@ public class SysDept implements Serializable {
     private List<?> list;
 
 
-
-
-
 }

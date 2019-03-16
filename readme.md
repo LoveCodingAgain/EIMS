@@ -1,0 +1,1 @@
+http://demo.open.renren.io/renren-security/index.html#modules/sys/user.html

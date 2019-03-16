@@ -39,13 +39,20 @@ public class ShiroConfig {
         Map<String, String> filterMap = new LinkedHashMap<String, String>();
         filterMap.put("/main", "anon");
         // 放行静态资源请求以及Swagger
-        filterMap.put("/static/**", "anon");
+        filterMap.put("/css/**", "anon");
+        filterMap.put("/js/**", "anon");
+        filterMap.put("/fonts/**", "anon");
+        filterMap.put("/libs/**", "anon");
+        filterMap.put("/plugins/**", "anon");
+        filterMap.put("/img/**", "anon");
+        // 验证码图片
+        filterMap.put("/captcha.jpg", "anon");
         filterMap.put("/v2/api-docs", "anon");
         filterMap.put("/swagger/**", "anon");
         filterMap.put("/swagger-ui.html", "anon");
         filterMap.put("/webjars/**", "anon");
         filterMap.put("/swagger-resources/**", "anon");
-        filterMap.put("/login", "anon");
+        filterMap.put("/login.html", "anon");
         // 权授权过滤器,当前授权拦截后,Shrio会自动跳转至未授权页面
         filterMap.put("/user/add", "perms[user:add]");
         filterMap.put("/user/update", "perms[user:update]");
@@ -54,7 +61,7 @@ public class ShiroConfig {
         // 拦截所有未经访问的页面至登录页面
         filterMap.put("/**", "authc");
         // 调整登录页面
-        shiroFilter.setLoginUrl("/tologin");
+        shiroFilter.setLoginUrl("/login");
         // 设置未授权页面
         shiroFilter.setUnauthorizedUrl("/unauth");
         // 设置

@@ -15,12 +15,12 @@ public interface SysStaffMapper extends BaseMapper<SysStaff> {
      * 查询用户的所有权限
      * @param userId  用户ID
      */
-    List<String> queryAllPerms(Long userId);
+    List<String> queryAllPermas(Integer userId);
 
     /**
      * 查询用户的所有菜单ID
      * @param userId
      * @return
      */
-    List<Long> queryAllMenuId(Long userId);
+    List<Integer> queryAllMenuId(Integer userId);
 }

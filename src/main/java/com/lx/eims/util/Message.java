@@ -1,7 +1,6 @@
 package com.lx.eims.util;
 import java.util.HashMap;
 import java.util.Map;
-
 /**
  * @author: lixing
  * date: 2019-03-13

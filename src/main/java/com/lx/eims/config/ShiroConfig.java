@@ -37,7 +37,6 @@ public class ShiroConfig {
          * perms:该资源必须得到资源权限才可以访问!
          */
         Map<String, String> filterMap = new LinkedHashMap<String, String>();
-        filterMap.put("/main", "anon");
         // 放行静态资源请求以及Swagger
         filterMap.put("/css/**", "anon");
         filterMap.put("/js/**", "anon");
@@ -53,6 +52,8 @@ public class ShiroConfig {
         filterMap.put("/webjars/**", "anon");
         filterMap.put("/swagger-resources/**", "anon");
         filterMap.put("/login.html", "anon");
+        // 系统登录,放行
+        filterMap.put("/sys/login", "anon");
         // 权授权过滤器,当前授权拦截后,Shrio会自动跳转至未授权页面
         filterMap.put("/user/add", "perms[user:add]");
         filterMap.put("/user/update", "perms[user:update]");
@@ -61,23 +62,12 @@ public class ShiroConfig {
         // 拦截所有未经访问的页面至登录页面
         filterMap.put("/**", "authc");
         // 调整登录页面
-        shiroFilter.setLoginUrl("/login");
+        shiroFilter.setLoginUrl("/login.html");
         // 设置未授权页面
         shiroFilter.setUnauthorizedUrl("/unauth");
         // 设置
         shiroFilter.setFilterChainDefinitionMap(filterMap);
         return shiroFilter;
-    }
-
-    /**
-     * 配置凭证匹配器
-     */
-    @Bean
-    public HashedCredentialsMatcher hashedCredentialsMatcher() {
-        HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
-        hashedCredentialsMatcher.setHashAlgorithmName("MD5");
-        hashedCredentialsMatcher.setHashIterations(2);
-        return hashedCredentialsMatcher;
     }
 
     /**
@@ -118,6 +108,17 @@ public class ShiroConfig {
     }
 
     /**
+     * 自定义Realm
+     * @param hashedCredentialsMatcher
+     * @return
+     */
+    @Bean("userRealm")
+    public UserRealm userRealm(HashedCredentialsMatcher hashedCredentialsMatcher){
+       UserRealm userRealm=new UserRealm();
+       userRealm.setCredentialsMatcher(hashedCredentialsMatcher);
+       return userRealm;
+    }
+    /**
      * Session交给Shiro管理
      */
     @Bean
@@ -154,6 +155,16 @@ public class ShiroConfig {
         AuthorizationAttributeSourceAdvisor advisor = new AuthorizationAttributeSourceAdvisor();
         advisor.setSecurityManager(securityManager);
         return advisor;
+    }
+    /**
+     * 配置凭证匹配器
+     */
+    @Bean
+    public HashedCredentialsMatcher hashedCredentialsMatcher() {
+        HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
+        hashedCredentialsMatcher.setHashAlgorithmName("MD5");
+        hashedCredentialsMatcher.setHashIterations(2);
+        return hashedCredentialsMatcher;
     }
 
 }

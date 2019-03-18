@@ -13,39 +13,46 @@
     <link rel="stylesheet" th:href="@{/css/all-skins.min.css}">
     <link rel="stylesheet" th:href="@{/css/AdminLTE.min.css}">
     <style type="text/css">
-        #login{
+        #loginBody{
           background: #1AA094;
         }
     </style>
 </head>
-<body id="login" class="hold-transition login-page">
+<body id="loginBody" class="hold-transition login-page">
 <div class="login-box" id="eims" v-cloak>
     <div class="login-logo">
         <b>臻善企业信息管理系统</b>
     </div>
     <!-- /.login-logo -->
     <div class="login-box-body">
-        <p class="login-box-msg">员工登录</p>
+        <p class="login-box-msg" style="font-size:18px;font-weight:bold ">员工登录</p>
         <div v-if="error" class="alert alert-danger alert-dismissible">
             <h4 style="margin-bottom: 0px;"><i class="fa fa-exclamation-triangle"></i> {{errorMsg}}</h4>
         </div>
         <div class="form-group has-feedback">
-            <input type="text" class="form-control" v-model="username" placeholder="账号">
+            <input type="text" class="form-control"  v-model="username" placeholder="输入账号">
             <span class="glyphicon glyphicon-user form-control-feedback"></span>
         </div>
         <div class="form-group has-feedback">
-            <input type="password" class="form-control" v-model="password" placeholder="密码">
+            <input type="password" class="form-control" v-model="password" placeholder="输入密码">
             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
         </div>
         <div class="form-group has-feedback">
-            <input type="text" class="form-control" v-model="captcha" @keyup.enter="login" placeholder="验证码">
+            <input type="text" class="form-control" v-model="captcha" @keyup.enter="login" placeholder="输入验证码">
             <span class="glyphicon glyphicon-warning-sign form-control-feedback"></span>
         </div>
         <div class="form-group has-feedback">
-            <img alt="如果看不清楚，请单击图片刷新！" class="pointer" :src="src" @click="refreshCode">
-            &nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:;" @click="refreshCode">点击刷新</a>
+            <img alt="如果看不清楚,请单击图片刷新！" class="pointer" :src="src" @click="refreshCode()">
+            &nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:;" @click="refreshCode()">点击刷新</a>
         </div>
-
+        <div class="form-group has-feedback">
+             <input type="checkbox" v-model="rememberMe" />一周之内免登录
+            <strong>|</strong>
+             <a href="javascript:void(0)">忘记密码?</a>
+            <strong>|</strong>
+            <a href="javascript:void(0)">无法登录?</a>
+            <strong>|</strong>
+        </div>
 
         <div class="row">
             <div class="col-xs-8">
@@ -54,12 +61,11 @@
             </div>
             <!-- /.col -->
             <div class="col-xs-4">
-                <button type="button" class="btn btn-primary btn-block btn-flat" @click="login">登录</button>
+                <button type="button" class="btn btn-primary btn-block btn-flat" @click="login()">登录</button>
             </div>
             <!-- /.col -->
         </div>
         <!-- /.social-auth-links -->
-
     </div>
     <!-- /.login-box-body -->
 </div>
@@ -69,6 +75,8 @@
     <script type="text/javascript" th:src="@{/libs/jquery.slimscroll.min.js}"></script>
     <script type="text/javascript" th:src="@{/libs/fastclick.min.js}"></script>
     <script type="text/javascript" th:src="@{/libs/app.js}"></script>
+    <script type="text/javascript" th:src="@{/libs/md5.min.js}"></script>
+    <script type="text/javascript" th:src="@{/plugins/layer/layer.js}"></script>
 <script type="text/javascript">
     var vm = new Vue({
         el:'#eims',
@@ -76,6 +84,7 @@
             username: '',
             password: '',
             captcha: '',
+            rememberMe: '',
             error: false,
             errorMsg: '',
             src: 'captcha.jpg'
@@ -89,20 +98,53 @@
             refreshCode: function(){
                 this.src = "captcha.jpg?t=" + $.now();
             },
-            login: function (event) {
-                var data = "username="+vm.username+"&password="+vm.password+"&captcha="+vm.captcha;
+            login: function () {
+                // 制作弹出窗
+                if(vm.username==null||vm.username==''){
+                    layer.open({
+                        type: 0,
+                        title: '登录信息错误提示!',
+                        content: '员工登录用户名不能为空!'
+                    });
+                    vm.username='';
+                    return;
+                }
+                if(vm.password==null||vm.password==''){
+                    layer.open({
+                        type: 0,
+                        title: '登录信息错误提示!',
+                        content: '员工登录密码不能为空!'
+                    });
+                    vm.username='';
+                    vm.password='';
+                    return;
+                }
+                if(vm.captcha==null||vm.captcha==''){
+                    layer.open({
+                        type: 0,
+                        title: '登录信息错误提示!',
+                        content: '员工登录验证码不能为空!'
+                    });
+                    vm.username='';
+                    vm.password='';
+                    return;
+                }
+                // 将密码进行前端加盐加密.
+                var salt="shiro_password_salt";
+                vm.password=""+salt.charAt(2)+salt.charAt(7) + vm.password +salt.charAt(10) + salt.charAt(18);
+                vm.password=md5(vm.password);
                 $.ajax({
                     type: "POST",
                     url: "sys/login",
-                    data: data,
+                    data:JSON.stringify({"username":vm.username,"password":vm.password,"captcha":vm.captcha,"rememberMe":vm.rememberMe}),
                     dataType: "json",
+                    contentType: "application/json; charset=utf-8",
                     success: function(result){
-                        if(result.code == 0){//登录成功
-                            parent.location.href ='index.html';
+                        if(result.code == 0){
+                            parent.location.href ='/index.html';
                         }else{
                             vm.error = true;
                             vm.errorMsg = result.msg;
-
                             vm.refreshCode();
                         }
                     }
@@ -111,19 +153,6 @@
         }
     });
 </script>
-<script type='text/javascript'>
-    (function(m, ei, q, i, a, j, s) {
-        m[i] = m[i] || function() {
-            (m[i].a = m[i].a || []).push(arguments)
-        };
-        j = ei.createElement(q),
-            s = ei.getElementsByTagName(q)[0];
-        j.async = true;
-        j.charset = 'UTF-8';
-        j.src = 'https://static.meiqia.com/dist/meiqia.js?_=t';
-        s.parentNode.insertBefore(j, s);
-    })(window, document, 'script', '_MEIQIA');
-    _MEIQIA('entId', 141597);
-</script>
+<script type='text/javascript' th:include="meiqia::meiqia"></script>
 </body>
 </html>

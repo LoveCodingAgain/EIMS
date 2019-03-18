@@ -17,7 +17,8 @@ import java.util.List;
  */
 @Data
 @TableName("sys_staff")
-public class SysStaff implements Serializable {
+public class SysStaff implements Serializable{
+    private static final long serialVersionUID = 1L;
     /**
      * 员工ID
      */
@@ -29,6 +30,18 @@ public class SysStaff implements Serializable {
      */
     @NotBlank(message = "用户名不能为空")
     private String username;
+
+    /**
+     * 验证码
+     */
+    @TableField(exist = false)
+    private String captcha;
+
+    /**
+     * 记住我
+     */
+    @TableField(exist = false)
+    private boolean rememberMe;
 
     /**
      * 员工密码

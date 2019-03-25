@@ -1,4 +1,7 @@
-//生成菜单
+var new_element1=document.createElement("script");
+new_element1.setAttribute("type","text/javascript");
+new_element1.setAttribute("src","libs/md5.min.js");
+document.body.appendChild(new_element1);
 var menuItem = Vue.extend({
     name: 'menu-item',
     props:{item:{}},
@@ -43,10 +46,10 @@ var vm = new Vue({
 		main:"main.html",
 		password:'',
 		newPassword:'',
-        navTitle:"控制台"
+        navTitle:"项目介绍"
 	},
 	methods: {
-		getMenuList: function (event) {
+		getMenuList: function () {
 			$.getJSON("sys/menu/nav?_"+$.now(), function(r){
 				vm.menuList = r.menuList;
 			});
@@ -66,36 +69,74 @@ var vm = new Vue({
 				content: jQuery("#passwordLayer"),
 				btn: ['修改','取消'],
 				btn1: function (index) {
-					var data = "password="+vm.password+"&newPassword="+vm.newPassword;
+					// 校验新旧密码不能为空.
+					if(vm.password==''||vm.password==null){
+                        layer.open({
+                            type: 0,
+                            title: '修改密码错误提示!',
+                            content: '原始密码不能为空哟!'
+                        });
+                        return ;
+					}
+					// 校验旧密码不能为空.
+					if((vm.password!=''||vm.password!=null)&&(vm.newPassword==''||vm.newPassword==null)){
+                        layer.open({
+                            type: 0,
+                            title: '修改密码错误提示!',
+                            content: '新密码不能为空哟!'
+                        });
+                        return ;
+					}
+                    // 校验旧密码长度,不小于6位
+                    if(vm.password.length<6){
+                        layer.open({
+                            type: 0,
+                            title: '修改密码错误提示!',
+                            content: '旧密码长度至少6位哟!'
+                        });
+                        return ;
+                    }
+					// 校验新密码长度,不小于6位
+					if(vm.newPassword.length<6){
+                        layer.open({
+                            type: 0,
+                            title: '修改密码错误提示!',
+                            content: '新密码长度至少6位哟!'
+                        });
+                        return ;
+					}
+					// 完成MD5的新旧密码加密.
+                    var salt="shiro_password_salt";
+                    vm.password=""+salt.charAt(2)+salt.charAt(7) + vm.password +salt.charAt(10) + salt.charAt(18);
+                    vm.newPassword=""+salt.charAt(2)+salt.charAt(7) + vm.newPassword +salt.charAt(10) + salt.charAt(18);
+                    vm.password=md5(vm.password);
+                    vm.newPassword=md5(vm.newPassword);
 					$.ajax({
 						type: "POST",
 					    url: "sys/user/password",
-					    data: data,
+					    data: JSON.stringify({"password":vm.password,"newPassword":vm.newPassword}),
+                        contentType: "application/json; charset=utf-8",
 					    dataType: "json",
 					    success: function(result){
 							if(result.code == 0){
 								layer.close(index);
-								layer.alert('修改成功', function(index){
+								layer.alert('恭喜,修改成功!', function(index){
 									location.reload();
 								});
 							}else{
-								layer.alert(result.msg);
+                                layer.open({
+                                    type: 0,
+                                    title: '修改密码错误提示!',
+                                    content: result.msg
+                                });
+                                vm.password='';
+                                vm.newPassword='';
 							}
 						}
 					});
 	            }
 			});
-		},
-        donate: function () {
-            layer.open({
-                type: 2,
-                title: false,
-                area: ['806px', '467px'],
-                closeBtn: 1,
-                shadeClose: false,
-                content: ['http://cdn.renren.io/donate.jpg', 'no']
-            });
-        }
+		}
 	},
 	created: function(){
 		this.getMenuList();

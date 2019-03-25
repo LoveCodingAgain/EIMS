@@ -2,6 +2,7 @@ package com.lx.eims.aspect;
 import com.google.gson.Gson;
 import com.lx.eims.annotation.RecordSysLog;
 import com.lx.eims.entity.system.SysLog;
+import com.lx.eims.entity.system.SysStaff;
 import com.lx.eims.service.SysLogService;
 import com.lx.eims.util.HttpContextUtils;
 import com.lx.eims.util.IPUtils;
@@ -75,10 +76,9 @@ public class SysLogAspect {
         String methodName=signature.getMethod().getName();
         sysLog.setMethod(className+"."+methodName+"()");
         // 获取请求的参数
-        Object[] objs=joinPoint.getArgs();
-
+        Object[] args=joinPoint.getArgs();
         try {
-            String params=new Gson().toJson(objs[0]);
+            String params=new Gson().toJson(args[0]);
             sysLog.setParams(params);
         } catch (Exception e) {
             e.printStackTrace();
@@ -88,7 +88,7 @@ public class SysLogAspect {
         // 设置请求IP地址
         sysLog.setIp(IPUtils.getIpAddr(request));
         // 获取执行请求用户名
-        String username=((SysLog) ShiroUtils.getSubject().getPrincipal()).getUsername();
+        String username=((SysStaff) ShiroUtils.getSubject().getPrincipal()).getUsername();
         sysLog.setUsername(username);
         // 设置请求执行时间
         sysLog.setTime(time);

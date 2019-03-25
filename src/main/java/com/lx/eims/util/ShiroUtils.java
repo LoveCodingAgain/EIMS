@@ -1,4 +1,5 @@
 package com.lx.eims.util;
+import com.lx.eims.entity.system.SysStaff;
 import com.lx.eims.exception.GlobalException;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
@@ -74,4 +75,25 @@ public class ShiroUtils {
         return kaptcha.toString();
     }
 
+    /**
+     * 获取员工实体
+     * @return
+     */
+    public static SysStaff getStaff(){
+        return (SysStaff)ShiroUtils.getSubject().getPrincipal();
+    }
+
+    /**
+     * 获取员工ID
+     * @return
+     */
+    public static Integer getStaffId(){
+        return ShiroUtils.getStaff().getStaffId();
+    }
+    /**
+     * 获取员工部门ID
+     */
+    public static Integer getDeptId(){
+        return ShiroUtils.getStaff().getDeptId();
+    }
 }

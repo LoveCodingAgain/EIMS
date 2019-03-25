@@ -1,6 +1,7 @@
 package com.lx.eims.controller.system;
 import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.Producer;
+import com.lx.eims.annotation.RecordSysLog;
 import com.lx.eims.entity.system.SysStaff;
 import com.lx.eims.util.Message;
 import com.lx.eims.util.ShiroUtils;
@@ -52,6 +53,7 @@ public class SysLoginController {
      */
     @RequestMapping(value = "/sys/login", method = RequestMethod.POST,consumes = "application/json")
     @ResponseBody
+    @RecordSysLog("员工登录")
     public Message login(@RequestBody SysStaff staff){
          // 从Session中获取验证码.
         String kaptcha = ShiroUtils.getKaptcha(Constants.KAPTCHA_SESSION_KEY);

@@ -1,7 +1,10 @@
 package com.lx.eims.controller;
 import com.lx.eims.util.ShiroUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 /**
  * @author: lixing
  * date: 2019-02-12
@@ -55,5 +58,11 @@ public class PageController {
     @RequestMapping("/404.html")
     public String error404(){
         return "404.html";
+    }
+
+    @RequestMapping("/test")
+    @ResponseBody
+    public String test(){
+        return "test";
     }
 }

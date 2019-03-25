@@ -1,4 +1,5 @@
 package com.lx.eims.service.impl.system;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lx.eims.entity.system.SysStaff;
 import com.lx.eims.mapper.system.SysStaffMapper;
@@ -38,6 +39,9 @@ public class SysStaffServiceImpl extends ServiceImpl<SysStaffMapper, SysStaff> i
 
     @Override
     public boolean updatePassword(Integer userId, String password, String newPassword) {
-        return false;
+        SysStaff staff=new SysStaff();
+        staff.setPassword(newPassword);
+        return this.update(staff,new QueryWrapper<SysStaff>().eq("staff_id",userId).eq("password",password));
+
     }
 }

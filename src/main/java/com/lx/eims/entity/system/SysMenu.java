@@ -64,7 +64,7 @@ public class SysMenu implements Serializable {
     private Integer orderNum;
 
     /**
-     * 排序树属性
+     * 菜单排序树属性
      */
     @TableField(exist=false)
     private Boolean open;

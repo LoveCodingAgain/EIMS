@@ -41,24 +41,17 @@
             </div>
         </nav>
     </header>
-    <!-- Left side column. contains the sidebar -->
+    <!-- 左侧菜单-->
     <aside class="main-sidebar">
-        <!-- sidebar: style can be found in sidebar.less -->
         <section class="sidebar">
-            <!-- /.search form -->
-            <!-- sidebar menu: : style can be found in sidebar.less -->
             <ul class="sidebar-menu">
                 <li class="header">导航菜单</li>
                 <!-- vue生成的菜单 -->
                 <menu-item :item="item" v-for="item in menuList"></menu-item>
             </ul>
         </section>
-        <!-- /.sidebar -->
     </aside>
-    <!-- =============================================== -->
-    <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
         <section class="content-header">
             <ol class="breadcrumb" id="nav_title" style="position:static;float:none;">
                 <li class="active"><i class="fa fa-home" style="font-size:20px;position:relative;top:2px;left:-3px;"></i> &nbsp; 首页</li>
@@ -89,19 +82,23 @@
         <form class="form-horizontal">
             <div class="form-group">
                 <div class="form-group">
-                    <div class="col-sm-2 control-label">账号</div>
-                    <span class="label label-success" style="vertical-align: bottom;">{{user.username}}</span>
+                    <div class="col-sm-2 control-label">账号名</div>
+                    <span class="label label-success" style="vertical-align: bottom;">
+                        <shiro:user>
+                            <shiro:principal property="username"/>
+                        </shiro:user>
+                    </span>
                 </div>
                 <div class="form-group">
-                    <div class="col-sm-2 control-label">原密码</div>
+                    <div class="col-sm-2 control-label">旧的密码</div>
                     <div class="col-sm-10">
-                        <input type="password" class="form-control" v-model="password" placeholder="原密码"/>
+                        <input type="password" class="form-control" v-model="password" placeholder="旧的密码"/>
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-sm-2 control-label">新密码</div>
+                    <div class="col-sm-2 control-label">新的密码</div>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" v-model="newPassword" placeholder="新密码"/>
+                        <input type="password" class="form-control" v-model="newPassword" placeholder="新的密码"/>
                     </div>
                 </div>
             </div>

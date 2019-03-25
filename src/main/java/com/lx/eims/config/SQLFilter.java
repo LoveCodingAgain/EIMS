@@ -2,7 +2,7 @@ package com.lx.eims.config;
 import com.lx.eims.exception.GlobalException;
 import org.apache.commons.lang.StringUtils;
 /**
- * author: lixing
+ * @author: lixing
  * date: 2019-03-15
  * time: 23:25
  * description:SQL注入过滤

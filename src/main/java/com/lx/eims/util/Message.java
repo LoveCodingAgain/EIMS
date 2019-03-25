@@ -9,6 +9,9 @@ import java.util.Map;
  */
 public class Message extends HashMap<String, Object> {
 
+    /**
+     * 成功状态为0
+     */
     public Message(){
         put("code" ,0);
         put("msg", "Success");

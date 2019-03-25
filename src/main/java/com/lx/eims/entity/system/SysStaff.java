@@ -49,6 +49,11 @@ public class SysStaff implements Serializable{
     private String password;
 
     /**
+     * 员工修改新密码
+     */
+    @TableField(exist = false)
+    private String newPassword;
+    /**
      * 员工密码盐值
      */
     private String salt;

@@ -1,22 +1,22 @@
 package com.lx.eims.service;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.lx.eims.entity.system.SysLog;
+import com.lx.eims.entity.assets.AssetsInfo;
 import com.lx.eims.util.PageUtils;
-
 import java.util.List;
 import java.util.Map;
 /**
  * @author: lixing
- * date: 2019-03-15
- * time: 17:06
- * description:系统日志查询分页接口
+ * date: 2019-03-29
+ * time: 12:45
+ * description:资产管理
  */
-public interface SysLogService extends IService<SysLog> {
+public interface AssetsService extends IService<AssetsInfo> {
     /**
-     * 查询所有的日志
+     * 查询全部的资产
      * @return
      */
-    List<SysLog> logList();
+    List<AssetsInfo> assetsList();
+
 
     /**
      * 分页查询
@@ -31,8 +31,7 @@ public interface SysLogService extends IService<SysLog> {
      * @param params
      * @return
      */
-    PageUtils queryByOperate(String operation, Map<String, Object> params);
-
+    PageUtils queryByCategory(String operation, Map<String, Object> params);
     /**
      * 根据时间段查询
      * @param startDate
@@ -41,4 +40,12 @@ public interface SysLogService extends IService<SysLog> {
      * @return
      */
     PageUtils queryByDate(String startDate, String endDate, Map<String, Object> params);
+
+    /**
+     * 根据资产名称查询
+     * @param assInforName
+     * @return
+     */
+    AssetsInfo queryByName(String assInforName);
+
 }

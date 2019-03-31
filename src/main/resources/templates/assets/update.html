@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/plugins/jqgrid/ui.jqgrid-bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/plugins/ztree/css/metroStyle/metroStyle.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/plugins/layDate-v5.0.9/laydate/layui.css}">
+    <script th:src="@{/libs/jquery.min.js}"></script>
+    <script th:src="@{/plugins/layer/layer.js}"></script>
+    <script th:src="@{/libs/bootstrap.min.js}"></script>
+    <script th:src="@{/libs/vue.min.js}"></script>
+    <script th:src="@{/plugins/jqgrid/grid.locale-cn.js}"></script>
+    <script th:src="@{/plugins/jqgrid/jquery.jqGrid.min.js}"></script>
+    <script th:src="@{/plugins/ztree/jquery.ztree.all.min.js}"></script>
+    <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/plugins/layDate-v5.0.9/laydate/laydate.js}"></script>
+    <title>【资产更新页面】</title>
+</head>
+<body>
+<div id="assetsUpdate" v-cloak>
+    <div class="grid-btn">
+        <div class="form-group col-sm-2">
+            <input type="text" class="form-control" v-model="assInforName"  placeholder="根据资产名称查询">
+        </div>
+        <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改资产</a>
+    </div>
+    <hr style="border:1px solid lightseagreen;border-radius: 5px;"/>
+    <div v-show="showPanel" class="panel panel-default">
+        <div class="panel-heading">新增</div>
+        <form class="form-horizontal">
+            <div class="form-group">
+                <div class="col-sm-2 control-label">资产大类</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="largeCategory"  placeholder="输入资产大类"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">资产小类</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="smallCategory"  placeholder="请输入资产小类"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">资产名称</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="assInforName"  placeholder="请输入资产名称"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">资产价格</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="assInforPrice" placeholder="请输入资产价格"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">资产数目</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="assInforNum"  placeholder="请输入资产数目"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">资产状态</div>
+                <label class="radio-inline">
+                    <input type="radio" name="status" value="1" v-model="assInforStatus"/> 可用
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="status" value="0" v-model="assInforStatus"/> 弃用
+                </label>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">资产备注</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="assInforRemark"  placeholder="请输入资产备注"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">新增时间</div>
+                <div class="col-sm-10">
+                    <input id="createTime" type="text" class="form-control" v-model="createTime" placeholder="请选择资产新增时间"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">更新时间</div>
+                <div class="col-sm-10">
+                    <input id="updateTime" type="text" class="form-control" v-model="updateTime"   placeholder="请选择资产更新时间"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label"></div>
+                <input type="button" class="btn btn-primary" @click="save"  value="确定"/>
+                &nbsp;&nbsp;<input type="button" class="btn btn-warning" value="返回" @click="reset" />
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    var vm=new Vue({
+       el: "#assetsUpdate",
+       data:{
+           showPanel:false,
+           largeCategory: '',
+           smallCategory: '',
+           assInforPrice: '',
+           assInforName: '',
+           assInforNum: '',
+           assInforStatus: 1,
+           assInforRemark: '',
+           createTime:'',
+           updateTime:''
+       },
+       methods:{
+           update:function(event){
+                vm.showPanel=!(vm.showPanel);
+                $.ajax({
+                    type:"POST",
+                    url:"../assets/search/name",
+                    dataType:"JSON",
+                    contentType:"application/json;charset=utf-8",
+                    data:JSON.stringify({"assInforName":vm.assInforName}),
+                    success:function(assetsInfo){
+                       // 得到后端返回的数据,Vue渲染.
+                       console.log(assetsInfo);
+                   }
+                });
+           },
+           save:function(event){
+
+           },
+           reset:function(event){
+
+           }
+       }
+    });
+</script>
+</body>
+</html>

@@ -12,12 +12,12 @@ import org.springframework.http.HttpStatus;
  */
 @Configuration
 public class ErrorConfigurar implements ErrorPageRegistrar {
-
     @Override
     public void registerErrorPages(ErrorPageRegistry registry) {
-        ErrorPage[] errorPages=new ErrorPage[1];
-        // 系统404错误页面
+        ErrorPage[] errorPages=new ErrorPage[2];
+        // 系统404错误页面和500错误页面
         errorPages[0]=new ErrorPage(HttpStatus.NOT_FOUND, "/404.html");
+        errorPages[1]=new ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR, "/500.html");
         registry.addErrorPages(errorPages);
     }
 }

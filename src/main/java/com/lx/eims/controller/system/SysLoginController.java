@@ -53,7 +53,7 @@ public class SysLoginController {
      */
     @RequestMapping(value = "/sys/login", method = RequestMethod.POST,consumes = "application/json")
     @ResponseBody
-    @RecordSysLog("员工登录")
+    //@RecordSysLog("员工登录")
     public Message login(@RequestBody SysStaff staff){
          // 从Session中获取验证码.
         String kaptcha = ShiroUtils.getKaptcha(Constants.KAPTCHA_SESSION_KEY);

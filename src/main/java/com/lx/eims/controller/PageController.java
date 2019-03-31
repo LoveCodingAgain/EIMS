@@ -4,7 +4,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 /**
  * @author: lixing
  * date: 2019-02-12
@@ -58,6 +57,15 @@ public class PageController {
     @RequestMapping("/404.html")
     public String error404(){
         return "404.html";
+    }
+
+    /**
+     * 系统500错误页面
+     * @return
+     */
+    @RequestMapping("/500.html")
+    public String error500(){
+        return "500.html";
     }
 
     @RequestMapping("/test")

@@ -48,4 +48,9 @@ public interface AssetsService extends IService<AssetsInfo> {
      */
     AssetsInfo queryByName(String assInforName);
 
+    /**
+     * 更新资产信息
+     * @param assetsInfo
+     */
+    int updateAssets(AssetsInfo assetsInfo);
 }

@@ -1,13 +1,21 @@
 package com.lx.eims.controller.assets;
 import com.lx.eims.entity.assets.AssetsCategory;
+import com.lx.eims.entity.assets.AssetsCount;
 import com.lx.eims.entity.assets.AssetsInfo;
+import com.lx.eims.entity.assets.AssetsMessage;
+import com.lx.eims.exception.GlobalException;
 import com.lx.eims.service.AssetsCategoryService;
 import com.lx.eims.service.AssetsService;
+import com.lx.eims.util.Constant;
 import com.lx.eims.util.Message;
 import com.lx.eims.util.PageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 /**
  * @author: lixing
@@ -127,11 +135,10 @@ public class AssetsController {
      */
     @RequestMapping(value="/save/category",method = RequestMethod.POST, consumes = "application/json", produces="application/json")
     @ResponseBody
-    public Message saveCategory(@RequestBody AssetsCategory assetsCategory){
-        try {
-            assetsCategoryService.save(assetsCategory);
-        } catch (Exception e) {
-            return Message.error("新增类目失败,有重复类目先查询检查一下！");
+    public Message saveCategory(@RequestBody AssetsCategory assetsCategory) {
+        boolean result=assetsCategoryService.save(assetsCategory);
+        if(!result){
+            throw new DuplicateKeyException("新增类目失败,有重复类目先查询检查一下！");
         }
         return Message.ok();
    }
@@ -144,12 +151,36 @@ public class AssetsController {
    @RequestMapping(value="/save/assets",method = RequestMethod.POST, consumes = "application/json")
    @ResponseBody
     public Message saveAssets(@RequestBody AssetsInfo assetsInfo){
-       System.out.println(assetsInfo.toString());
-       try {
-           assetsService.save(assetsInfo);
-       } catch (Exception e) {
-           return Message.error("新增资产失败,有重复资产先查询检查一下！");
+       boolean result=assetsService.save(assetsInfo);
+       if(!result){
+           throw new  DuplicateKeyException("新增类目失败,有重复类目先查询检查一下！");
        }
        return Message.ok();
+   }
+
+    /**
+     * 更新资源
+     * @param assetsInfo
+     * @return
+     */
+   @RequestMapping(value="/update/assets", method=RequestMethod.POST, consumes = "application/json")
+   @ResponseBody
+   public Message updateAssets(@RequestBody AssetsInfo assetsInfo){
+       int result=assetsService.updateAssets(assetsInfo);
+       if(result<1){
+           throw new GlobalException("抱歉,修改资产失败,请重试!");
+       }
+       return Message.ok();
+   }
+
+    /**
+     * 类目图表展示
+     * @return
+     */
+   @RequestMapping(value="/charts/assets",produces = "application/json")
+   @ResponseBody
+   public List<AssetsCount> largeCategoty(){
+       List<AssetsCount> assetsList=assetsCategoryService.getLargeCategory();
+       return  assetsList;
    }
 }

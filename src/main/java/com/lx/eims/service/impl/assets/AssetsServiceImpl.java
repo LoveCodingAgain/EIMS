@@ -1,5 +1,6 @@
 package com.lx.eims.service.impl.assets;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lx.eims.entity.assets.AssetsInfo;
@@ -84,5 +85,15 @@ public class AssetsServiceImpl extends ServiceImpl<AssetsMapper, AssetsInfo> imp
         QueryWrapper<AssetsInfo> wrapper=new QueryWrapper<>();
         wrapper.eq("ass_infor_name", assInforName);
         return this.baseMapper.selectOne(wrapper);
+    }
+
+    /**
+     * 更新资源(根据ID)
+     * @param assetsInfo
+     */
+    @Override
+    public int updateAssets(AssetsInfo assetsInfo) {
+         return this.baseMapper.update(assetsInfo,
+                 new QueryWrapper<AssetsInfo>().eq("ass_infor_id", assetsInfo.getAssInforId()));
     }
 }

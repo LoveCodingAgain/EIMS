@@ -32,6 +32,15 @@ public class Constant {
     public static final String ASC = "asc";
 
     /**
+     * 成功
+     */
+    public static final Integer SUCCESS_CODE=200;
+    /**
+     * 服务端错误
+     */
+    public static final Integer SERVER_CODE=500;
+
+    /**
      * 菜单类型
      */
     public enum MenuType {

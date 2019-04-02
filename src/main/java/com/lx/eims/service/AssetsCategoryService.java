@@ -1,7 +1,9 @@
 package com.lx.eims.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lx.eims.entity.assets.AssetsCategory;
+import com.lx.eims.entity.assets.AssetsCount;
 import com.lx.eims.util.PageUtils;
+import java.util.List;
 import java.util.Map;
 /**
  * @author: lixing
@@ -15,5 +17,11 @@ public interface AssetsCategoryService extends IService<AssetsCategory> {
      * @return
      */
     PageUtils getLargeCategory(Map<String, Object> params);
+
+    /**
+     * 大类目分组查询
+     * @return
+     */
+    List<AssetsCount> getLargeCategory();
 
 }

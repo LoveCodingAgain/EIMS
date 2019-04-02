@@ -25,7 +25,7 @@ $.ajaxSetup({
 	cache: false
 });
 
-//重写alert
+//重写alert弹出框
 window.alert = function(msg, callback){
 	parent.layer.alert(msg, function(index){
 		parent.layer.close(index);
@@ -45,7 +45,7 @@ window.confirm = function(msg, callback){
 	});
 }
 
-//选择一条记录
+//jqGrid选择一条记录
 function getSelectedRow() {
     var grid = $("#jqGrid");
     var rowKey = grid.getGridParam("selrow");
@@ -59,7 +59,6 @@ function getSelectedRow() {
     	alert("只能选择一条记录");
     	return ;
     }
-    
     return selectedIDs[0];
 }
 

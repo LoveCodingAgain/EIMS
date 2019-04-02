@@ -25,6 +25,8 @@
 <body>
       <div id="assetsAdd" v-cloak>
           <div class="grid-btn">
+              <a class="btn btn-primary" @click="query"><i class="fa fa-search"></i>全部资产</a>
+              &nbsp;&nbsp;&nbsp;&nbsp;
               <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增资产</a>
           </div>
           <hr style="border:1px solid lightseagreen;border-radius: 5px;"/>
@@ -95,6 +97,12 @@
               </div>
           </form>
       </div>
+          <div>
+              <!-- 查询结果表格-->
+              <table id="jqGrid" class="table table-striped" style="text-align: center;">
+                  <div id="jqGridPager"></div>
+              </table>
+          </div>
       </div>
 <script type="text/javascript">
     var vm = new Vue({
@@ -130,6 +138,62 @@
             });
         },
         methods: {
+            query: function (event) {
+                // 使用前端分页插件jqGrid来实现查询.
+                $(function () {
+                    $("#jqGrid").jqGrid({
+                        url: '../assets/search/list',
+                        datatype: "json",
+                        colModel: [
+                            {label: 'id', name: 'assInforId', width: 30, key: true},
+                            {label: '资产大类', name: 'largeCategory', width: 50},
+                            {label: '资产小类', name: 'smallCategory', width: 50},
+                            {label: '资产名称', name: 'assInforName', width: 64},
+                            {label: '资产数量(个)', name: 'assInforNum', width: 54},
+                            {label: '资产单价(元)', name: 'assInforPrice', width: 54},
+                            {label: '资产备注', name: 'assInforRemark', width: 64},
+                            {label: '资产状态', name: 'assInforStatus', width: 40,formatter: function(value, options, row){
+                                    return value ===0 ?
+                                        '<span class="label label-danger">弃用</span>' :
+                                        '<span class="label label-success">可用</span>';}},
+                            {label: '新增时间', name: 'assCreateTime', width: 90},
+                            {label: '更新时间', name: 'assUpdateTime', width: 90}
+                        ],
+                        viewrecords: true,
+                        height: 385,
+                        width: 800,
+                        rowNum: 10,
+                        rowList: [10, 30, 50],
+                        rownumbers: true,
+                        rownumWidth: 25,
+                        autowidth: true,
+                        multiselect: false,
+                        pager: "#jqGridPager",
+                        jsonReader: {
+                            root: "page.list",
+                            page: "page.currPage",
+                            total: "page.totalPage",
+                            records: "page.totalCount"
+                        },
+                        prmNames: {
+                            page: "page",
+                            rows: "limit",
+                            order: "order"
+                        },
+                        gridComplete: function () {
+                            //隐藏grid底部滚动条
+                            $("#jqGrid").closest(".ui-jqgrid-bdiv").css({"overflow-x": "hidden"});
+                        }
+                    });
+                    // 重新加载数据
+                    $("#jqGrid").jqGrid('clearGridData');
+                    $("#jqGrid").jqGrid('setGridParam', {
+                        url: '../assets/search/list',
+                        datatype: "json",
+                        page: 1
+                    }).trigger("reloadGrid");
+                });
+            },
             add: function(event){
                 // 如果展开了就关闭,如果
                 vm.showPanel=!(vm.showPanel);
@@ -145,14 +209,14 @@
                          if(result.code ==0 ) {
                              layer.open({
                                  type: 0,
-                                 title: '资产提示信息!',
+                                 title: '资产新增提示信息!',
                                  content: '新增资产成功!'
                              });
                              vm.showPanel=!(vm.showPanel);
                          } else{
                              layer.open({
                                  type: 0,
-                                 title: '资产提示信息!',
+                                 title: '资产新增提示信息!',
                                  content: result.msg
                              });
                              vm.showPanel=!(vm.showPanel);

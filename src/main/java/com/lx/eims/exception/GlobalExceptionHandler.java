@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestController;
+
 /**
  * @author: lixing
  * date: 2019-03-13
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
  * description:全局异常处理,返回JSON格式数据
  */
 @ControllerAdvice
+@RestController
 public class GlobalExceptionHandler {
     /**
      * 日志
@@ -40,7 +43,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicateKeyException.class)
     public Message handleDuplicateKeyException(DuplicateKeyException e){
         logger.error(e.getMessage(), e);
-        return Message.error("数据库中已存在该记录!");
+        return Message.error("数据库中已存在该记录!无法添加,请检查!");
     }
 
     /**

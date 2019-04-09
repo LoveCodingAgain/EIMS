@@ -1,7 +1,10 @@
 package com.lx.eims.entity.contract;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
+import java.math.BigDecimal;
 import java.util.Date;
 /**
  * @author: lixing
@@ -9,12 +12,14 @@ import java.util.Date;
  * time: 20:59
  * description:合同实体类
  */
-@TableName("contract")
-public class Contract {
+@TableName("constract")
+@Setter
+@Getter
+public class Constract {
     /**
      * 合同表ID
      */
-    private Integer contractId;
+    private Integer constractId;
     /**
      * 合同甲方
      */
@@ -22,7 +27,7 @@ public class Contract {
     /**
      * 合同乙方
       */
-    private String contractNameSecond;
+    private String constractNameSecond;
 
     /**
      * 合同内容
@@ -30,32 +35,44 @@ public class Contract {
     private  String constractContent;
 
     /**
+     * 合同类型
+     */
+    private String constractType;
+    /**
      * 合同状态
      */
     private String constractStatus;
+    /**
+     * 合同金额
+     */
+    private BigDecimal constractAmount;
 
     /**
      * 合同签订时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date contractSignTime;
+    private Date constractSignTime;
 
     /**
      * 合同结束时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date contractEndTime;
+    private Date constractEndTime;
 
     @Override
     public String toString() {
-        return "Contract{" +
-                "contractId=" + contractId +
+        return "Constract{" +
+                "constractId=" + constractId +
                 ", customerUnit='" + customerUnit + '\'' +
-                ", contractNameSecond='" + contractNameSecond + '\'' +
+                ", constractNameSecond='" + constractNameSecond + '\'' +
                 ", constractContent='" + constractContent + '\'' +
+                ", constractType='" + constractType + '\'' +
                 ", constractStatus='" + constractStatus + '\'' +
+                ", constractAmount=" + constractAmount +
+                ", constractSignTime=" + constractSignTime +
+                ", constractEndTime=" + constractEndTime +
                 '}';
     }
 }

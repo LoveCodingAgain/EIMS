@@ -10,27 +10,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface NoticeMapper extends BaseMapper<Notice> {
-    /**
-     * 删除
-     * description:公告Mpaper.
-     * @param noticeId
-     * @return
-     */
-    int deleteByPrimaryKey(Integer noticeId);
 
-    /**
-     * 插入
-     * @param record
-     * @return
-     */
-    int insert(Notice record);
-
-    /**
-     *
-      * @param record
-     * @return
-     */
-    int insertSelective(Notice record);
 
     /**
      * 主键查询

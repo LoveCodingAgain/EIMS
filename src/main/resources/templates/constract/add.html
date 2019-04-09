@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/plugins/jqgrid/ui.jqgrid-bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/plugins/ztree/css/metroStyle/metroStyle.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/plugins/layDate-v5.0.9/laydate/layui.css}">
+    <script th:src="@{/libs/jquery.min.js}"></script>
+    <script th:src="@{/plugins/layer/layer.js}"></script>
+    <script th:src="@{/libs/bootstrap.min.js}"></script>
+    <script th:src="@{/libs/vue.min.js}"></script>
+    <script th:src="@{/plugins/jqgrid/grid.locale-cn.js}"></script>
+    <script th:src="@{/plugins/jqgrid/jquery.jqGrid.min.js}"></script>
+    <script th:src="@{/plugins/ztree/jquery.ztree.all.min.js}"></script>
+    <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/plugins/layDate-v5.0.9/laydate/laydate.js}"></script>
+    <title>【合同新增页面】</title>
+</head>
+<body>
+<div id="contractAdd" v-cloak>
+    <div>
+        <div class="grid-btn">
+            <a class="btn btn-primary" @click="addCustomer"><i class="fa fa-pencil-square-o"></i>&nbsp;新增客户</a>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <a class="btn btn-primary" @click="addConstract"><i class="fa fa-pencil-square-o"></i>&nbsp;新增合同</a>
+            <hr style="border:1px solid lightseagreen;border-radius: 5px;"/>
+        </div>
+        <div v-show="showPanelCus" class="panel panel-default">
+            <div class="panel-heading">新增客户</div>
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">客户单位</div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" v-model="customerUnit"  placeholder="请输入客户单位" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">客户地址</div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" v-model="customerAddress"  placeholder="请输入客户地址" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">客户邮件</div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" v-model="customerEmail"  placeholder="请输入客户邮件" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">客户电话</div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" v-model="customerPhone"  placeholder="请输入客户电话" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">客户性质</div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" v-model="customerProfile"  placeholder="请输入客户性质" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label"></div>
+                    <input type="button" class="btn btn-primary" @click="saveCustomer"  value="确定"/>
+                    &nbsp;&nbsp;<input type="button" class="btn btn-warning" value="返回" @click="resetCus" />
+                </div>
+            </form>
+        </div>
+
+        <div v-show="showPanelCon" class="panel panel-default">
+            <div class="panel-heading">新增合同</div>
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">合同甲方</div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" v-model="customerUnit"  placeholder="请输入合同甲方" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">合同乙方</div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" v-model="constractNameSecond"   placeholder="请输入合同乙方"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">合同内容</div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" v-model="constractContent"  placeholder="请输入合同内容"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">合同类型</div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" v-model="constractType" placeholder="请输入合同类型"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">合同金额</div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" v-model="constractAmount"  placeholder="请输入资产数目"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">合同状态</div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" v-model="constractStatus"  placeholder="请输入合同状态"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">开始时间</div>
+                    <div class="col-sm-10">
+                        <input id="createTime" type="text" class="form-control" v-model="constractSignTime" placeholder="请选择合同开始时间" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">结束时间</div>
+                    <div class="col-sm-10">
+                        <input id="updateTime" type="text" class="form-control" v-model="constractEndTime"   placeholder="请选择合同结束时间"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                <div class="col-sm-2 control-label"></div>
+                <input type="button" class="btn btn-primary" @click="saveConstract"  value="确定"/>
+                &nbsp;&nbsp;<input type="button" class="btn btn-warning" value="返回" @click="resetCon" />
+        </div>
+            </form>
+        </div>
+    </div>
+</div>
+   <script>
+       var vm=new Vue({
+           el: '#contractAdd',
+           data: {
+               showPanelCon: false,
+               showPanelCus: false,
+               customerAddress:'',
+               customerEmail:'',
+               customerPhone:'',
+               customerProfile:'',
+               constractId: '',
+               customerUnit: '',
+               constractNameSecond: '',
+               constractContent: '',
+               constractType: '',
+               constractAmount: '',
+               constractStatus: '',
+               constractSignTime: '',
+               constractEndTime: ''
+           },
+           mounted() {
+               var mountedTime = this;
+               laydate.render({
+                   elem: '#createTime',
+                   type: 'datetime',
+                   // 控件选择完毕后的回调函数
+                   done: function (constractSignTime) {
+                       mountedTime.constractSignTime = constractSignTime;
+                   }
+               });
+               laydate.render({
+                   elem: '#updateTime',
+                   type: 'datetime',
+                   done: function (constractEndTime) {
+                       mountedTime.constractEndTime = constractEndTime;
+                   }
+               });
+           },
+           methods:{
+               addConstract:function(event){
+                   vm.showPanelCon=!(vm.showPanelCon);
+               },
+               addCustomer:function(event){
+                   vm.showPanelCus=!(vm.showPanelCus);
+               },
+               saveCustomer:function(event){
+                   $.ajax({
+                       type: "POST",
+                       url: "../constract/add/customer",
+                       dataType: "JSON",
+                       data: JSON.stringify({"customerUnit":vm.customerUnit,"customerAddress":vm.customerAddress,"customerEmail":vm.customerEmail, "customerPhone":vm.customerPhone,"customerProfile":vm.customerProfile}),
+                       contentType:"application/json;charset=utf-8",
+                       success: function(result){
+                           if(result.code==0){
+                               layer.open({
+                                   type: 0,
+                                   title: '客户新增提示信息!',
+                                   content: '新增客户信息成功!'
+                               });
+                               vm.showPanelCus=!(vm.showPanelCus);
+                           }else{
+                               layer.open({
+                                   type: 0,
+                                   title: '客户新增提示信息!',
+                                   content: result.msg
+                               });
+                               vm.showPanelCus=!(vm.showPanelCus);
+                           }
+                       }
+                   });
+               },
+               saveConstract:function(event){
+                   // Ajax根据id更新数据
+                   $.ajax({
+                       type: "POST",
+                       url: "../constract/add/constract",
+                       dataType: "JSON",
+                       data: JSON.stringify({"constractId":vm.constractId,"customerUnit":vm.customerUnit,"constractNameSecond":vm.constractNameSecond,"constractContent":vm.constractContent,
+                           "constractType":vm.constractType,"constractAmount":vm.constractAmount,
+                           "constractStatus":vm.constractStatus,"constractSignTime":vm.constractSignTime,"constractEndTime":vm.constractEndTime}),
+                       contentType:"application/json;charset=utf-8",
+                       success: function(result){
+                           if(result.code==0){
+                               layer.open({
+                                   type: 0,
+                                   title: '合同新增提示信息!',
+                                   content: '新增合同信息成功!'
+                               });
+                               vm.showPanelCon=!(vm.showPanelCon);
+                           }else{
+                               layer.open({
+                                   type: 0,
+                                   title: '合同新增提示信息!',
+                                   content: result.msg
+                               });
+                               vm.showPanelCon=!(vm.showPanelCon);
+                           }
+                       }
+                   });
+               },
+               resetCus:function(event){
+                   vm.showPanelCus=!(vm.showPanelCus);
+               },
+               resetCon:function(event){
+                   vm.showPanelCon=!(vm.showPanelCon);
+               }
+           }
+       });
+   </script>
+</body>
+</html>

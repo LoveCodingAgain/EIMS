@@ -65,4 +65,4 @@
     }
 })(jQuery);
 
-$("#scrolldiv").textSlider({line: 1, speed: 300, timer: 6000});
+$("#scrolldiv").textSlider({line: 1, speed: 300, timer: 10000});

@@ -1,6 +1,6 @@
-package com.lx.eims.mapper.contract;
+package com.lx.eims.mapper.constract;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.lx.eims.entity.contract.Contract;
+import com.lx.eims.entity.contract.Constract;
 import org.springframework.stereotype.Repository;
 /**
  * @author: lixing
@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
  * description:合同
  */
 @Repository
-public interface ContractMapper extends BaseMapper<Contract> {
+public interface ConstractMapper extends BaseMapper<Constract> {
 
 }

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/plugins/jqgrid/ui.jqgrid-bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/plugins/ztree/css/metroStyle/metroStyle.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/plugins/layDate-v5.0.9/laydate/layui.css}">
+    <script th:src="@{/libs/jquery.min.js}"></script>
+    <script th:src="@{/plugins/layer/layer.js}"></script>
+    <script th:src="@{/libs/bootstrap.min.js}"></script>
+    <script th:src="@{/libs/vue.min.js}"></script>
+    <script th:src="@{/plugins/jqgrid/grid.locale-cn.js}"></script>
+    <script th:src="@{/plugins/jqgrid/jquery.jqGrid.min.js}"></script>
+    <script th:src="@{/plugins/ztree/jquery.ztree.all.min.js}"></script>
+    <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/plugins/layDate-v5.0.9/laydate/laydate.js}"></script>
+    <title>【合同更新页面】</title>
+</head>
+<body>
+<div id="contractSearch" v-cloak>
+    <div>
+        <div class="grid-btn">
+            <a class="btn btn-primary" @click="query"><i class="fa fa-search"></i>全部合同</a>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改合同</a>
+            <hr style="border:1px solid lightseagreen;border-radius: 5px;"/>
+        </div>
+            <div v-show="showPanel" class="panel panel-default">
+                <div class="panel-heading">合同更新</div>
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">合同甲方</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" disabled="true" v-model="customerUnit"  placeholder="请输入合同甲方" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">合同乙方</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="constractNameSecond"  disabled="true" placeholder="请输入合同乙方"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">合同内容</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="constractContent"  placeholder="请输入合同内容"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">合同类型</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="constractType" placeholder="请输入合同类型"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">合同金额</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="constractAmount"  placeholder="请输入资产数目"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">合同状态</div>
+                        <div class="col-sm-10">
+                        <input type="text" class="form-control" v-model="constractStatus"  placeholder="请输入合同状态"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">开始时间</div>
+                        <div class="col-sm-10">
+                            <input id="createTime" type="text" class="form-control" v-model="constractSignTime" placeholder="请选择合同开始时间" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">结束时间</div>
+                        <div class="col-sm-10">
+                            <input id="updateTime" type="text" class="form-control" v-model="constractEndTime"   placeholder="请选择合同结束时间"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label"></div>
+                        <input type="button" class="btn btn-primary" @click="save"  value="确定"/>
+                        &nbsp;&nbsp;<input type="button" class="btn btn-warning" value="返回" @click="reset" />
+                    </div>
+                </form>
+        </div>
+
+        <!-- 查询结果表格-->
+        <table id="jqGrid" class="table table-striped" style="text-align: center;">
+            <div id="jqGridPager"></div>
+        </table>
+    </div>
+</div>
+<script>
+    var vm=new Vue({
+        el: '#contractSearch',
+        data:{
+            showPanel:false,
+            constractId:'',
+            customerUnit:'',
+            constractNameSecond:'',
+            constractContent:'',
+            constractType:'',
+            constractAmount:'',
+            constractStatus:'',
+            constractSignTime:'',
+            constractEndTime:''
+        },
+        mounted(){
+            var mountedTime = this;
+            laydate.render({
+                elem: '#createTime',
+                type: 'datetime',
+                // 控件选择完毕后的回调函数
+                done: function(constractSignTime){
+                    mountedTime.constractSignTime=constractSignTime;
+                }
+            });
+            laydate.render({
+                elem: '#updateTime',
+                type: 'datetime',
+                done: function(constractEndTime){
+                    mountedTime.constractEndTime=constractEndTime;
+                }
+            });
+        },
+        methods:{
+            query:function(){
+                // 使用前端分页插件jqGrid来实现查询.
+                $(function () {
+                    $("#jqGrid").jqGrid({
+                        url: '../constract/search/list',
+                        datatype: "json",
+                        colModel: [
+                            {label: 'id', name: 'constractId', width: 15, key: true},
+                            {label: '合同甲方', name: 'customerUnit', width: 60},
+                            {label: '合同乙方', name: 'constractNameSecond', width: 60, align: 'center'},
+                            {label: '合同内容', name: 'constractContent', width: 60},
+                            {label: '合同类型', name: 'constractType', width: 34},
+                            {label: '合同金额(元)', name: 'constractAmount', width: 38},
+                            {label: '合同状态', name: 'constractStatus', width: 40},
+                            {label: '开始时间', name: 'constractSignTime', width: 60},
+                            {label: '结束时间', name: 'constractEndTime', width: 60}
+                        ],
+                        viewrecords: true,
+                        height: 385,
+                        width: 800,
+                        rowNum: 10,
+                        rowList: [10, 30, 50],
+                        rownumbers: true,
+                        rownumWidth: 25,
+                        autowidth: true,
+                        multiselect: true,
+                        pager: "#jqGridPager",
+                        jsonReader: {
+                            root: "page.list",
+                            page: "page.currPage",
+                            total: "page.totalPage",
+                            records: "page.totalCount"
+                        },
+                        prmNames: {
+                            page: "page",
+                            rows: "limit",
+                            order: "order"
+                        },
+                        gridComplete: function () {
+                            //隐藏grid底部滚动条
+                            $("#jqGrid").closest(".ui-jqgrid-bdiv").css({"overflow-x": "hidden"});
+                        }
+                    });
+                    // 重新加载数据
+                    $("#jqGrid").jqGrid('clearGridData');
+                    $("#jqGrid").jqGrid('setGridParam', {
+                        url: '../constract/search/list',
+                        datatype: "json",
+                        page: 1
+                    }).trigger("reloadGrid");
+                });
+            },
+            update:function(){
+                vm.showPanel=!(vm.showPanel);
+                var constractId=getSelectedRow();
+                if(constractId==''||constractId==null){
+                    return ;
+                }
+                var rowData = $("#jqGrid").jqGrid('getRowData',constractId);
+                vm.constractId= rowData.constractId;
+                vm.customerUnit=rowData.customerUnit;
+                vm.constractNameSecond=rowData.constractNameSecond;
+                vm.constractContent=rowData.constractContent;
+                vm.constractType=rowData.constractType;
+                vm.constractAmount=rowData.constractAmount;
+                vm.constractStatus=rowData.constractStatus;
+                vm.constractSignTime=rowData.constractSignTime;
+                vm.constractEndTime=rowData.constractSignTime;
+            },
+            save: function () {
+                // Ajax根据id更新数据.
+                $.ajax({
+                    type: "POST",
+                    url: "../constract/update/constract",
+                    dataType: "JSON",
+                    data: JSON.stringify({"constractId":vm.constractId,"customerUnit":vm.customerUnit,"constractNameSecond":vm.constractNameSecond,"constractContent":vm.constractContent,
+                        "constractType":vm.constractType,"constractAmount":vm.constractAmount,
+                        "constractStatus":vm.constractStatus,"constractSignTime":vm.constractSignTime,"constractEndTime":vm.constractEndTime}),
+                    contentType:"application/json;charset=utf-8",
+                    success: function(result){
+                        if(result.code==0){
+                            layer.open({
+                                type: 0,
+                                title: '合同更新提示信息!',
+                                content: '更新合同信息成功!'
+                            });
+                            vm.showPanel=!(vm.showPanel);
+                        }else{
+                            layer.open({
+                                type: 0,
+                                title: '合同更新提示信息!',
+                                content: result.msg
+                            });
+                            vm.showPanel=!(vm.showPanel);
+                        }
+                    }
+                });
+            },
+            reset: function() {
+                vm.showPanel=!(vm.showPanel);
+            }
+        }
+    });
+
+</script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-package com.lx.eims.mapper.contract;
+package com.lx.eims.mapper.constract;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lx.eims.entity.contract.Customer;
 /**

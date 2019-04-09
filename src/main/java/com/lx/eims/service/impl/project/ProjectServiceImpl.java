@@ -1,16 +1,16 @@
 package com.lx.eims.service.impl.project;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lx.eims.entity.project.Project;
+import com.lx.eims.entity.project.ProjectCount;
 import com.lx.eims.mapper.project.ProjectMapper;
 import com.lx.eims.service.ProjectService;
 import com.lx.eims.util.PageUtils;
 import com.lx.eims.util.QueryUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
+import java.util.List;
 import java.util.Map;
 /**
  * @author: lixing
@@ -57,4 +57,23 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         );
         return new PageUtils(projectIPage);
     }
+
+    @Override
+    public List<ProjectCount> getProjectType() {
+        return this.baseMapper.projectGroup();
+    }
+
+    @Override
+    public List<Project> projectList() {
+        List<Project> projectList=this.baseMapper.selectList(null);
+        return projectList;
+    }
+
+    @Override
+    public int updateProject(Project project) {
+        return this.baseMapper.update(project,
+                new QueryWrapper<Project>().eq("project_id", project.getProjectId()));
+    }
+
+
 }

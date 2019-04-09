@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="applicable-device" content="pc,mobile">
+    <meta name="MobileOptimized" content="width"/>
+    <meta name="HandheldFriendly" content="true"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <title>【员工职位搜索】</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <script th:src="@{/libs/jquery.min.js}"></script>
+    <script th:src="@{/plugins/chart/fusioncharts.js}"></script>
+    <script th:src="@{/plugins/chart/fusioncharts.theme.fint.js}"></script>
+    <script th:src="@{/plugins/chart/jquery.chart.js}"></script>
+    <style type="text/css">
+    #url{
+    width: 550px;
+    height: 40px;
+    border: 3px solid red;
+    position:absolute;
+    left:227px;
+    margin-top:60px;
+    }
+    #btn{
+    width: 150px;
+    height: 40px;
+    border: 2px solid red;
+    background-color: lightgreen;
+    font-size: 17px;
+    position: absolute;
+    left:774px;
+    margin-top: 60px;
+    }
+    #btn:hover{
+    cursor:pointer;
+    }
+    #search{
+    color: #ff0000;
+    font-size: 16px;
+    left: 80px;
+    position: absolute;
+    text-decoration: none;
+    top:110px;
+    }
+    #chart{
+    position:relative;
+    width:1100px;
+    height:600px;
+    left:50px;
+    margin-top:150px;
+    margin-bottom: 200px;
+    }
+    #weather{
+    position:absolute;
+    right:0px;
+    top:20px;
+    }
+    #resulttitle{
+    position:absolute;
+    top:37px;
+    left:150px;
+    font-size:18px;
+    font-family:微软雅黑;
+    font-weight: bold;
+    color:#A23400;
+    }
+    #warm{
+    position:absolute;
+    top:110px;
+    right:380px;
+    font-size:16px;
+    font-family:微软雅黑;
+    color:#8B1A1A;
+    }
+    </style>
+</head>
+<body>
+    <div>
+    <iframe id="weather" width="420" scrolling="no" height="60" frameborder="0"
+            allowtransparency="true"
+            src="http://i.tianqi.com/index.php?c=code&id=12&icon=1&num=5"></iframe>
+    <br/>
+    <span id="resulttitle">基于前程无忧网招聘数据抓取展示-供员工参考业界岗位薪酬</span>
+    <br/>
+    <a target="_blank" href="http://www.51job.com" id="search">职位详细查看</a>
+    <br/><hr style="border:1px solid lightseagreen;border-radius: 5px;"/>
+    <input type="text" name="url" id="url" placeholder="快搜索你想查询的岗位吧" /><button id="btn">点击查询</button>
+    <span id="warm">温馨提示:统计结果有一点点慢,安心等待吧!</span>
+    <br/>
+    <div id="chart"></div>
+    <script>
+        $(function(){
+            $("#btn").click(function(){
+                var dataUrl = $("#url").val();
+                $.ajax({
+                    type:"post",
+                    url:"../concern/dataResult",
+                    data:{"url":dataUrl},
+                    success:function(data){
+                        console.log(data);
+                        eval(data);
+                        var html ="";
+                        for(var tmp in objs){
+                            html+="<set label='"+tmp+"' value='"+objs[tmp]+"'/>"
+                        }
+                        $.lxChart({
+                            target:"chart",
+                            type:"pie3D",
+                            data:"<chart caption='2019年51job网上"+dataUrl+"行业招聘月薪范围统计报表' yaxisname='招聘职位个数' yaxismaxvalue='25000' theme='fint'>"+
+                                html+
+                                "</chart>"
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</div>
+</body>
+</html>

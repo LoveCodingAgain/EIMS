@@ -13,6 +13,7 @@
     <link rel="stylesheet" th:href="@{/plugins/layDate-v5.0.9/laydate/layui.css}">
     <script th:src="@{/libs/jquery.min.js}"></script>
     <script th:src="@{/plugins/layer/layer.js}"></script>
+    <script th:src="@{/libs/highcharts.js}"></script>
     <script th:src="@{/libs/bootstrap.min.js}"></script>
     <script th:src="@{/libs/vue.min.js}"></script>
     <script th:src="@{/plugins/jqgrid/grid.locale-cn.js}"></script>
@@ -34,12 +35,17 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <a class="btn btn-success" @click="finished"><i class="fa fa-search"></i>已完成</a>           &nbsp;&nbsp;&nbsp;&nbsp;
                 <a class="btn btn-danger"  @click="unfinished"><i class="fa fa-search"></i>未完成</a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <a class="btn btn-info" @click="typeQuery"><i class="fa fa-filter" aria-hidden="true"></i>类目报表</a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <a class="btn btn-success" href="/project/data/export"><i class="fa fa-download" aria-hidden="true"></i>数据导出</a>
                 <hr style="border:1px solid lightseagreen;border-radius: 5px;"/>
             </div>
             <!-- 查询结果表格-->
             <table id="jqGrid" class="table table-striped" style="text-align: center;">
                 <div id="jqGridPager"></div>
             </table>
+            <div id="container" style="width: 550px; height: 450px; margin: 0 auto;"></div>
         </div>
     </div>
     <script>
@@ -118,7 +124,7 @@
                            datatype: "json",
                            colModel: [
                                {label: 'id', name: 'projectId', width: 30, key: true},
-                               {label: '项目名称', name: 'proName', width: 50},
+                               {label: '项目名称', name: 'proName', width: 60},
                                {label: '项目类型', name: 'proType', width: 50},
                                {label: '项目负责人', name: 'principal', width: 50},
                                {label: '项目描述', name: 'proDesci', width: 70},
@@ -171,7 +177,7 @@
                            datatype: "json",
                            colModel: [
                                {label: 'id', name: 'projectId', width: 30, key: true},
-                               {label: '项目名称', name: 'proName', width: 50},
+                               {label: '项目名称', name: 'proName', width: 60},
                                {label: '项目类型', name: 'proType', width: 50},
                                {label: '项目负责人', name: 'principal', width: 50},
                                {label: '项目描述', name: 'proDesci', width: 70},
@@ -224,7 +230,7 @@
                            datatype: "json",
                            colModel: [
                                {label: 'id', name: 'projectId', width: 30, key: true},
-                               {label: '项目名称', name: 'proName', width: 50},
+                               {label: '项目名称', name: 'proName', width: 60},
                                {label: '项目类型', name: 'proType', width: 50},
                                {label: '项目负责人', name: 'principal', width: 50},
                                {label: '项目描述', name: 'proDesci', width: 70},
@@ -268,6 +274,75 @@
                            datatype: "json",
                            page: 1
                        }).trigger("reloadGrid");
+                   });
+               },
+               // 项目类型报表
+               typeQuery:function(event){
+                   var chart = new Highcharts.Chart({
+                       //常规图表选项设置
+                       chart: {
+                           renderTo: 'container',        //在哪个区域呈现，对应HTML中的一个元素ID
+                           plotBackgroundColor: null,    //绘图区的背景颜色
+                           plotBorderWidth: null,        //绘图区边框宽度
+                           plotShadow: false            //绘图区是否显示阴影
+                       },
+                       // 禁用HighCharts的版权
+                       credits: {
+                           enabled: false
+                       },
+                       //图表的主标题
+                       title: {
+                           text: '臻善企业信息管理系统项目类型展示图表',
+                           style: {
+                               color: "#A52A2A",
+                               fontSize: "20px",
+                               fontWeight: "bold"
+                           }
+                       },
+                       //当鼠标经过时的提示设置
+                       tooltip: {
+                           pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>',
+                           percentageDecimals: 1
+                       },
+                       //每种图表类型属性设置
+                       plotOptions: {
+                           //饼状图
+                           pie: {
+                               allowPointSelect: true,
+                               cursor: 'pointer',
+                               dataLabels: {
+                                   enabled: true,
+                                   color: '#000000',
+                                   connectorColor: '#000000',
+                                   formatter: function() {
+                                       //Highcharts.numberFormat(this.percentage,2)格式化数字，保留2位精度
+                                       return '<b>'+ this.point.name +'</b>: '+Highcharts.numberFormat(this.percentage,2) +' %';
+                                   }
+                               },
+                               // 展示颜色图例
+                               showInLegend: true
+                           }
+                       },
+                       //图表要展现的数据
+                       series: [{
+                           type: 'pie',
+                           name: '占比'
+                       }]
+                   });
+                   $.ajax({
+                       type:"POST" ,
+                       url:"../project/charts/type",
+                       dataType:"JSON",
+                       success:function(data){
+                           // 定义一个存储结果数组
+                           var projectType=[];
+                           // 遍历List对象
+                           $.each(data, function(i, typeList){
+                               projectType.push([typeList.proType,typeList.proCount]);
+                           });
+                           // 填充数据.
+                           chart.series[0].setData(projectType);
+                       }
                    });
                }
            }

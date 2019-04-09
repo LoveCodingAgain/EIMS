@@ -31,7 +31,7 @@
     </div>
     <hr style="border:1px solid lightseagreen;border-radius: 5px;"/>
     <div v-show="showPanel" class="panel panel-default">
-        <div class="panel-heading">新增</div>
+        <div class="panel-heading">更新</div>
         <form class="form-horizontal">
             <div class="form-group">
                 <div class="col-sm-2 control-label">资产大类</div>
@@ -197,9 +197,11 @@
                });
            },
            update:function(event){
+               var assInforId=getSelectedRow();
+               if(assInforId==''||assInforId==null){
+                   return ;
+               }
                 vm.showPanel=!(vm.showPanel);
-                // 根据选中的id
-                var assInforId=getSelectedRow();
                 // 获取选中这一行的数据,Vue数据绑定.
                 var rowData = $("#jqGrid").jqGrid('getRowData',assInforId);
                 vm.assInforId=rowData.assInforId;

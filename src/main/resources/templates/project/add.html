@@ -23,25 +23,103 @@
 </head>
 <body>
 <div id="projectAdd" v-cloak>
-    <div>
         <div class="grid-btn">
             <a class="btn btn-primary" @click="query"><i class="fa fa-search"></i>全部项目</a>
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增资产</a>
+            <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增项目</a>
             <hr style="border:1px solid lightseagreen;border-radius: 5px;"/>
+        </div>
+        <div v-show="showPanel" class="panel panel-default">
+            <div class="panel-heading">新增项目</div>
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">项目名称</div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" v-model="proName"  placeholder="输入项目名称"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">项目负责人</div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" v-model="principal"  placeholder="请输入项目负责人"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">项目描述</div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" v-model="proDesci"  placeholder="请输入资产名称"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">项目类型</div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" v-model="proType" placeholder="请输入项目类型"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">项目状态</div>
+                    <label class="radio-inline">
+                        <input type="radio" name="status" value="1" v-model="proStatus"/> 已完成
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="status" value="0" v-model="proStatus"/> 未完成
+                    </label>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">新增时间</div>
+                    <div class="col-sm-10">
+                        <input id="startTime" type="text" class="form-control" v-model="startTime" placeholder="请选择项目新增时间"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">结束时间</div>
+                    <div class="col-sm-10">
+                        <input id="endTime" type="text" class="form-control" v-model="endTime"   placeholder="请选择项目结束时间"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label"></div>
+                    <input type="button" class="btn btn-primary" @click="save"  value="确定"/>
+                    &nbsp;&nbsp;<input type="button" class="btn btn-warning" value="返回" @click="reset" />
+                </div>
+            </form>
         </div>
         <!-- 查询结果表格-->
         <table id="jqGrid" class="table table-striped" style="text-align: center;">
             <div id="jqGridPager"></div>
         </table>
-    </div>
 </div>
 <script>
     var vm=new Vue({
        el:"#projectAdd",
        data:{
-
+           showPanel:false,
+           proName:'',
+           principal:'',
+           proDesci:'',
+           proType:'',
+           proStatus:'',
+           startTime:'',
+           endTime:''
        },
+        mounted(){
+            var mountedTime = this;
+            laydate.render({
+                elem: '#startTime',
+                type: 'datetime',
+                // 控件选择完毕后的回调函数
+                done: function(startTime){
+                    mountedTime.startTime=startTime;
+                }
+            });
+            laydate.render({
+                elem: '#endTime',
+                type: 'datetime',
+                done: function(endTime){
+                    mountedTime.endTime=endTime;
+                }
+            });
+        },
        methods:{
                query:function(event){
                    $(function () {
@@ -50,7 +128,7 @@
                            datatype: "json",
                            colModel: [
                                {label: 'id', name: 'projectId', width: 30, key: true},
-                               {label: '项目名称', name: 'proName', width: 50},
+                               {label: '项目名称', name: 'proName', width: 60},
                                {label: '项目类型', name: 'proType', width: 50},
                                {label: '项目负责人', name: 'principal', width: 50},
                                {label: '项目描述', name: 'proDesci', width: 70},
@@ -97,7 +175,93 @@
                    });
            },
            add:function(event){
-
+                vm.showPanel=!(vm.showPanel);
+           },
+           save:function(event){
+                // ajax异步提交数据.(前端校验数据).
+                if(vm.proName==null||vm.proName==''){
+                    layer.open({
+                        type: 0,
+                        title: '项目新增提示信息!',
+                        content: '项目名称不能为空哟!'
+                    });
+                    return;
+                }
+               if(vm.principal==null||vm.principal==''){
+                   layer.open({
+                       type: 0,
+                       title: '项目新增提示信息!',
+                       content: '项目负责人不能为空哟!'
+                   });
+                   return;
+               }
+               if(vm.proDesci==null||vm.proDesci==''){
+                   layer.open({
+                       type: 0,
+                       title: '项目新增提示信息!',
+                       content: '项目描述信息不能为空哟!'
+                   });
+                   return;
+               }
+               if(vm.proType==null||vm.proType==''){
+                   layer.open({
+                       type: 0,
+                       title: '项目新增提示信息!',
+                       content: '项目类型不能为空哟!'
+                   });
+                   return;
+               }
+               if(vm.proStatus==null||vm.proStatus==''){
+                   layer.open({
+                       type: 0,
+                       title: '项目新增提示信息!',
+                       content: '项目状态不能为空哟!'
+                   });
+                   return;
+               }
+               if(vm.startTime==null||vm.startTime==''){
+                   layer.open({
+                       type: 0,
+                       title: '项目新增提示信息!',
+                       content: '项目新增时间不能为空!'
+                   });
+                   return;
+               }
+               if(vm.endTime==null||vm.endTime==''){
+                   layer.open({
+                       type: 0,
+                       title: '项目新增提示信息!',
+                       content: '项目结束时间不能为空!'
+                   });
+                   return;
+               }
+               $.ajax({
+                   type:'POST',
+                   url:'../project/save/project',
+                   dataType:'JSON',
+                   contentType:'application/json;charset=utf-8',
+                   data:JSON.stringify({"projectId":vm.projectId,"proName":vm.proName,"principal":vm.principal,"proDesci":vm.proDesci,"proType":vm.proType,"proStatus":vm.proStatus,"startTime":vm.startTime,"endTime":vm.endTime}),
+                   success:function(data){
+                       if(data.code==0) {
+                           layer.open({
+                               type: 0,
+                               title: '项目新增提示信息!',
+                               content: '项目新增成功!'
+                           });
+                           vm.showPanel=!(vm.showPanel);
+                       }else{
+                           layer.open({
+                               type: 0,
+                               title: '项目新增提示信息!',
+                               content: data.msg
+                           });
+                           vm.showPanel=!(vm.showPanel);
+                       }
+                   }
+               });
+           },
+           reset:function(event){
+               vm.showPanel=!(vm.showPanel);
            }
        }
     });

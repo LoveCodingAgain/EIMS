@@ -1,9 +1,17 @@
 package com.lx.eims.controller;
+import com.lx.eims.entity.notice.NoticeCustom;
+import com.lx.eims.service.NoticeService;
 import com.lx.eims.util.ShiroUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
+
 /**
  * @author: lixing
  * date: 2019-02-12
@@ -12,6 +20,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 public class PageController {
+
+    @Autowired
+    private NoticeService noticeService;
+
+    @ModelAttribute
+    public void init(Model model) throws Exception {
+        List<NoticeCustom> noticeCustomList=noticeService.listNotice(1);
+        model.addAttribute("noticeCustomList",noticeCustomList);
+    }
     /**
      * 跳转系统登录页面
      * @return

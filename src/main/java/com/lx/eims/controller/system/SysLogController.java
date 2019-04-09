@@ -1,9 +1,12 @@
 package com.lx.eims.controller.system;
+import com.lx.eims.entity.data.Data;
 import com.lx.eims.entity.system.SysLog;
+import com.lx.eims.service.DataService;
 import com.lx.eims.service.SysLogService;
 import com.lx.eims.util.DateUtils;
 import com.lx.eims.util.Message;
 import com.lx.eims.util.PageUtils;
+import com.lx.eims.util.ShiroUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 /**
@@ -28,6 +32,9 @@ public class SysLogController {
 
     @Autowired
     private SysLogService sysLogService;
+
+    @Autowired
+    private DataService dataService;
     /**
      * 系统日志页面
      * @return
@@ -80,6 +87,13 @@ public class SysLogController {
             response.setCharacterEncoding("UTF-8");
             response.setHeader("Content-Disposition","attachment;filename="+new String(fileName.getBytes("UTF-8"),"ISO-8859-1")+".xls");
             // 导出数据
+            // 记录数据
+            Data data=new Data();
+            data.setOperator(ShiroUtils.getStaff().getUsername());
+            data.setFormsName(fileName+".xls");
+            data.setRemark("日志数据导出备注");
+            data.setOperatorTime(new Date());
+            dataService.save(data);
             doExport(response.getOutputStream(), sysLogService.logList());
         } catch (Exception e) {
             e.getMessage();

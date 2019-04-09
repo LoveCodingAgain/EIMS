@@ -1,17 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>【500页面】</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <style type="text/css">
-          #error{
-              top:200px;
+          body{
+              background-color: #00EEEE;
           }
     </style>
 </head>
 <body>
-     <div id="error" align="center">
-            <h3>非常抱歉呐,系统发生500错误了,请下面联系管理员!</h3>
+     <div align="center" >
+            <h3>非常抱歉呐,系统发生错误了,请联系一下管理员!<a href="/index.html" class="alert-link">5s后自动跳转至首页</a></h3>
      </div>
+     <script>
+         setTimeout('location.href="/index.html"', 5000);
+     </script>
 </body>
 </html>

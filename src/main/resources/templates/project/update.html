@@ -1,9 +1,230 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <title>【项目更新页面】</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/plugins/jqgrid/ui.jqgrid-bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/plugins/ztree/css/metroStyle/metroStyle.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/plugins/layDate-v5.0.9/laydate/layui.css}">
+    <script th:src="@{/libs/jquery.min.js}"></script>
+    <script th:src="@{/plugins/layer/layer.js}"></script>
+    <script th:src="@{/libs/highcharts.js}"></script>
+    <script th:src="@{/libs/bootstrap.min.js}"></script>
+    <script th:src="@{/libs/vue.min.js}"></script>
+    <script th:src="@{/plugins/jqgrid/grid.locale-cn.js}"></script>
+    <script th:src="@{/plugins/jqgrid/jquery.jqGrid.min.js}"></script>
+    <script th:src="@{/plugins/ztree/jquery.ztree.all.min.js}"></script>
+    <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/plugins/layDate-v5.0.9/laydate/laydate.js}"></script>
 </head>
 <body>
-
+<div id="projectUpdate" v-cloak>
+    <div class="grid-btn">
+        <a class="btn btn-primary" @click="query"><i class="fa fa-search"></i>全部项目</a>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;更新项目</a>
+        <hr style="border:1px solid lightseagreen;border-radius: 5px;"/>
+        <div v-show="showPanel" class="panel panel-default">
+            <div class="panel-heading">更新项目</div>
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">项目名称</div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" v-model="proName"  placeholder="输入项目名称"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">项目负责人</div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" v-model="principal"  placeholder="请输入项目负责人"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">项目描述</div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" v-model="proDesci"  placeholder="请输入资产名称"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">项目类型</div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" v-model="proType" placeholder="请输入项目类型"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">项目状态</div>
+                    <label class="radio-inline">
+                        <input type="radio" name="status" value="1" v-model="proStatus"/> 已完成
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="status" value="0" v-model="proStatus"/> 未完成
+                    </label>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">开始时间</div>
+                    <div class="col-sm-10">
+                        <input id="startTime" type="text" class="form-control" v-model="startTime" placeholder="请选择项目开始时间"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">结束时间</div>
+                    <div class="col-sm-10">
+                        <input id="endTime" type="text" class="form-control" v-model="endTime"   placeholder="请选择项目结束时间"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label"></div>
+                    <input type="button" class="btn btn-primary" @click="save"  value="确定"/>
+                    &nbsp;&nbsp;<input type="button" class="btn btn-warning" value="返回" @click="reset" />
+                </div>
+            </form>
+        </div>
+        <!-- 查询结果表格-->
+        <table id="jqGrid" class="table table-striped" style="text-align: center;">
+            <div id="jqGridPager"></div>
+        </table>
+    </div>
+</div>
+<script>
+      var vm=new Vue({
+          el:"#projectUpdate",
+          data:{
+              showPanel:false,
+              projectId:'',
+              proName:'',
+              proType:'',
+              principal:'',
+              proDesci:'',
+              proStatus:0,
+              startTime:'',
+              endTime:''
+          },
+          mounted(){
+              var mountedTime = this;
+              laydate.render({
+                  elem: '#startTime',
+                  type: 'datetime',
+                  // 控件选择完毕后的回调函数
+                  done: function(startTime){
+                      mountedTime.startTime=startTime;
+                  }
+              });
+              laydate.render({
+                  elem: '#endTime',
+                  type: 'datetime',
+                  done: function(endTime){
+                      mountedTime.endTime=endTime;
+                  }
+              });
+          },
+          methods:{
+              query:function(event){
+                  $(function () {
+                      $("#jqGrid").jqGrid({
+                          url: '../project/search/all',
+                          datatype: "json",
+                          colModel: [
+                              {label: 'id', name: 'projectId', width: 30, key: true},
+                              {label: '项目名称', name: 'proName', width: 60},
+                              {label: '项目类型', name: 'proType', width: 50},
+                              {label: '项目负责人', name: 'principal', width: 50},
+                              {label: '项目描述', name: 'proDesci', width: 70},
+                              {label: '项目状态', name: 'proStatus', width: 60,formatter: function(value, options, row){
+                                      return value ===0 ?
+                                          '<span class="label label-danger">未完成</span>' :
+                                          '<span class="label label-success">已完成</span>';}},
+                              {label: '开始时间', name: 'startTime', width: 70},
+                              {label: '结束时间', name: 'endTime', width: 70}
+                          ],
+                          viewrecords: true,
+                          height: 385,
+                          width: 800,
+                          rowNum: 10,
+                          rowList: [10, 30, 50],
+                          rownumbers: true,
+                          rownumWidth: 25,
+                          autowidth: true,
+                          multiselect: true,
+                          pager: "#jqGridPager",
+                          jsonReader: {
+                              root: "page.list",
+                              page: "page.currPage",
+                              total: "page.totalPage",
+                              records: "page.totalCount"
+                          },
+                          prmNames: {
+                              page: "page",
+                              rows: "limit",
+                              order: "order"
+                          },
+                          gridComplete: function () {
+                              //隐藏grid底部滚动条
+                              $("#jqGrid").closest(".ui-jqgrid-bdiv").css({"overflow-x": "hidden"});
+                          }
+                      });
+                      // 重新加载数据
+                      $("#jqGrid").jqGrid('clearGridData');
+                      $("#jqGrid").jqGrid('setGridParam', {
+                          url: '../project/search/all',
+                          datatype: "json",
+                          page: 1
+                      }).trigger("reloadGrid");
+                  });
+              },
+              update:function(event){
+                  var projectId=getSelectedRow();
+                  if(projectId==''||projectId==null){
+                      return ;
+                  }
+                  vm.showPanel=!(vm.showPanel);
+                  // 根据选中的id
+                  // 获取选中这一行的数据,Vue数据绑定.
+                  var rowData = $("#jqGrid").jqGrid('getRowData',projectId);
+                  vm.projectId=rowData.projectId;
+                  vm.proName=rowData.proName;
+                  vm.proType=rowData.proType;
+                  vm.principal=rowData.principal;
+                  vm.proDesci=rowData.proDesci;
+                  vm.startTime=rowData.startTime;
+                  vm.endTime=rowData.endTime;
+              },
+              save:function(event){
+                  $.ajax({
+                      type:'POST',
+                      url:'../project/update/project',
+                      dataType:'JSON',
+                      contentType:'application/json;charset=utf-8',
+                      data:JSON.stringify({"projectId":vm.projectId,"proName":vm.proName,"principal":vm.principal,"proDesci":vm.proDesci,"proType":vm.proType,"proStatus":vm.proStatus,"startTime":vm.startTime,"endTime":vm.endTime}),
+                      success:function(data){
+                          if(data.code==0) {
+                              layer.open({
+                                  type: 0,
+                                  title: '项目更新提示信息!',
+                                  content: '项目更新成功!'
+                              });
+                              vm.showPanel=!(vm.showPanel);
+                          }else{
+                              layer.open({
+                                  type: 0,
+                                  title: '项目更新提示信息!',
+                                  content: data.msg
+                              });
+                              vm.showPanel=!(vm.showPanel);
+                          }
+                      }
+                  });
+                  vm.showPanel=!(vm.showPanel);
+              },
+              reset:function(event){
+                  vm.showPanel=!(vm.showPanel);
+              }
+          }
+      });
+</script>
 </body>
 </html>

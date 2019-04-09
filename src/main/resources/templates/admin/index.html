@@ -11,6 +11,31 @@
     <link rel="stylesheet" th:href="@{/css/AdminLTE.min.css}">
     <link rel="stylesheet" th:href="@{/css/all-skins.min.css}">
     <link rel="stylesheet" th:href="@{/css/main.css}">
+    <style>
+        .bull {
+            float: left;
+            font-size: 14px;
+            position: relative;
+            left: 9px;
+            color: #666;
+            margin-right: -18px;
+        }
+        .scrolltext {
+            width: 70%;
+            height: 25px;
+            line-height: 25px;
+            overflow: hidden;
+        }
+
+        .scrolltext ul li {
+            height: 30px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            word-wrap: normal;
+            overflow: hidden;
+        }
+
+    </style>
 </head>
 <body class="hold-transition skin-green-light sidebar-mini">
 <!-- Site wrapper -->
@@ -30,8 +55,11 @@
             </a>
             <div style="float:left;color:#fff9ec;padding:15px 10px;">
                 <shiro:user>
-                    欢迎您:&nbsp;<shiro:principal property="username" />
+                    欢迎您：&nbsp;<shiro:principal property="username" />
                 </shiro:user>
+            </div>
+            <div id="clock" style="float:left;color:#fff9ec;padding:15px 10px;">
+
             </div>
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
@@ -57,6 +85,22 @@
                 <li class="active"><i class="fa fa-home" style="font-size:20px;position:relative;top:2px;left:-3px;"></i> &nbsp; 首页</li>
                 <li class="active">{{navTitle}}</li>
             </ol>
+            <nav>
+            <div class="bull"><i class="fa fa-volume-up"></i>&nbsp;&nbsp;&nbsp;&nbsp;系统公告></div>
+                <div id="scrolldiv">
+                    <div class="scrolltext">
+                        <ul style="margin-top: 0px;">
+                                <span th:each="noticeList,listStat: ${noticeCustomList}">
+                                <li class="scrolltext-title">
+                                    <a th:href="@{/notice/details/(noticeId=${noticeList.noticeId})}" style="font-size: 18px;font-weight: bold;">
+                                        <span th:text="${noticeList.noticeTitle}"></span>
+                                    </a>
+                                </li>
+                                </span>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
         </section>
         <!-- Main content -->
         <section class="content" style="background:#fff;">
@@ -112,5 +156,33 @@
 <script th:src="@{/libs/app.js}"></script>
 <script th:src="@{/plugins/layer/layer.js}"></script>
 <script th:src="@{/js/index.js}"></script>
+<script th:src="@{/js/script.js}"></script>
+<script type="text/javascript">
+    function realSysTime(clock){
+        var now=new Date();
+        var year=now.getFullYear();
+        var month=now.getMonth();
+        var date=now.getDate();
+        var day=now.getDay();
+        var hour=now.getHours();
+        var minu=now.getMinutes();
+        var sec=now.getSeconds();
+        if(Number(minu)<10){
+            minu="0"+minu.toString();
+        }
+        if(Number(sec)<10){
+            sec="0"+sec.toString();
+        }
+        month=month+1;
+        var arr_week=new Array("星期日","星期一","星期二","星期三","星期四","星期五","星期六");
+        var week=arr_week[day];
+        var time="当前时间是："+year+"年"+month+"月"+date+"日 "+week+" "+hour+":"+minu+":"+sec;
+        clock.innerHTML=time;
+    }
+    window.onload=function(){
+        window.setInterval("realSysTime(clock)",1000);
+    }
+
+</script>
 </body>
 </html>

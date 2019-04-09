@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
 /**
@@ -61,7 +60,7 @@ public class Project {
     @Override
     public String toString() {
         return "Project{" +
-                "pro_id=" + projectId +
+                "projectid=" + projectId +
                 ", proName='" + proName + '\'' +
                 ", principal='" + principal + '\'' +
                 ", proDesci='" + proDesci + '\'' +

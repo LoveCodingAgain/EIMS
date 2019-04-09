@@ -1,7 +1,9 @@
 package com.lx.eims.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lx.eims.entity.project.Project;
+import com.lx.eims.entity.project.ProjectCount;
 import com.lx.eims.util.PageUtils;
+import java.util.List;
 import java.util.Map;
 /**
  * @author: lixing
@@ -37,4 +39,23 @@ public interface ProjectService extends IService<Project> {
      * @return
      */
     PageUtils getUnfinished(Map<String, Object> params);
+
+    /**
+     * 项目类目查询
+     * @return
+     */
+    List<ProjectCount> getProjectType();
+
+    /**
+     * 全部项目列表
+     * @return
+     */
+    List<Project> projectList();
+
+    /**
+     * 更新项目信息
+     * @param project
+     * @return
+     */
+    int updateProject(Project project);
 }

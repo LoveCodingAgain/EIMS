@@ -3,6 +3,6 @@
 <mapper namespace="com.lx.eims.mapper.assets.AssetsCategoryMapper">
 
      <select id="categoryGroup" resultType="AssetsCount">
-         SELECT large_category,COUNT(large_category) AS categoryCount FROM assets GROUP BY large_category;
+         SELECT large_category,COUNT(large_category) AS  categoryCount FROM assets GROUP BY large_category;
      </select>
 </mapper>

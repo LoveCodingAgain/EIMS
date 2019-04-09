@@ -2,19 +2,23 @@ package com.lx.eims.controller.system;
 import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.Producer;
 import com.lx.eims.annotation.RecordSysLog;
+import com.lx.eims.entity.notice.NoticeCustom;
 import com.lx.eims.entity.system.SysStaff;
+import com.lx.eims.service.NoticeService;
 import com.lx.eims.util.Message;
 import com.lx.eims.util.ShiroUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.List;
 /**
  * @author: lixing
  * date: 2019-03-16

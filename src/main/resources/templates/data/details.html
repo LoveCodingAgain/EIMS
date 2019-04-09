@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>【数据明细】</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/plugins/jqgrid/ui.jqgrid-bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/plugins/ztree/css/metroStyle/metroStyle.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <script th:src="@{/libs/jquery.min.js}"></script>
+    <script th:src="@{/plugins/layer/layer.js}"></script>
+    <script th:src="@{/libs/bootstrap.min.js}"></script>
+    <script th:src="@{/libs/vue.min.js}"></script>
+    <script th:src="@{/plugins/jqgrid/grid.locale-cn.js}"></script>
+    <script th:src="@{/plugins/jqgrid/jquery.jqGrid.min.js}"></script>
+    <script th:src="@{/plugins/ztree/jquery.ztree.all.min.js}"></script>
+    <script th:src="@{/js/common.js}"></script>
+</head>
+<body>
+<div id="dataSearch" v-cloak>
+    <div>
+        <div class="grid-btn">
+            <a class="btn btn-primary" @click="query"><i class="fa fa-search"></i>全部报表数据</a>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <a class="btn btn-success" href="/data/export"><i class="fa fa-download" aria-hidden="true"></i>数据导出</a>
+        </div>
+        <hr style="border:1px solid lightseagreen;border-radius: 5px;"/>
+    </div>
+    <!-- 查询结果表格-->
+    <table id="jqGrid" class="table table-striped" style="text-align: center;">
+        <div id="jqGridPager"></div>
+    </table>
+</div>
+     <script>
+         var vm=new Vue({
+            el:"#dataSearch",
+            data:{
+            },
+            methods:{
+                query: function(event){
+                    $(function () {
+                        $("#jqGrid").jqGrid({
+                            url: '../data/search',
+                            datatype: "json",
+                            colModel: [
+                                {label: 'id', name: 'dataId', width: 30, key: true},
+                                {label: '操作人', name: 'operator', width: 50},
+                                {label: '报表名称', name: 'formsName', width: 50},
+                                {label: '报表备注', name: 'remark', width: 50},
+                                {label: '导出时间', name: 'operatorTime', width: 70}
+                            ],
+                            viewrecords: true,
+                            height: 385,
+                            width: 800,
+                            rowNum: 10,
+                            rowList: [10, 30, 50],
+                            rownumbers: true,
+                            rownumWidth: 25,
+                            autowidth: true,
+                            multiselect: false,
+                            pager: "#jqGridPager",
+                            jsonReader: {
+                                root: "page.list",
+                                page: "page.currPage",
+                                total: "page.totalPage",
+                                records: "page.totalCount"
+                            },
+                            prmNames: {
+                                page: "page",
+                                rows: "limit",
+                                order: "order"
+                            },
+                            gridComplete: function () {
+                                //隐藏grid底部滚动条
+                                $("#jqGrid").closest(".ui-jqgrid-bdiv").css({"overflow-x": "hidden"});
+                            }
+                        });
+                        // 重新加载数据
+                        $("#jqGrid").jqGrid('clearGridData');
+                        $("#jqGrid").jqGrid('setGridParam', {
+                            url: '../data/search',
+                            datatype: "json",
+                            page: 1
+                        }).trigger("reloadGrid");
+                    });
+                }
+            }
+         });
+     </script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lx.eims.mapper.constract.ConstractVOMapper">
+    <!-- 根据合同ID查询-->
+    <select id="getConstractVOById" parameterType="Integer" resultType="java.util.LinkedHashMap">
+            SELECT  con.customer_unit, con.constract_name_second,
+            con.constract_type,con.constract_content,con.constract_amount,
+            con.constract_status,con.constract_sign_time, con.constract_end_time,
+            cus.customer_address,cus.customer_email,cus.customer_phone,
+            cus.customer_profile
+            FROM customer_info AS cus INNER JOIN constract AS con ON
+            con.customer_unit=cus.customer_unit
+            WHERE constract_id=#{constractId};
+    </select>
+</mapper>

@@ -27,7 +27,9 @@
         <div class="grid-btn">
             <a class="btn btn-primary" @click="query"><i class="fa fa-search"></i>全部合同</a>
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <a class="btn btn-success" href="/constract/export"><i class="fa fa-download" aria-hidden="true"></i>全部合同导出</a>
+            <a class="btn btn-success" href="/constract/export"><i class="fa fa-download" aria-hidden="true"></i>合同报表导出</a>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <a class="btn btn-success" @click="constractExport"><i class="fa fa-download" aria-hidden="true"></i>单条合同导出</a>
             <hr style="border:1px solid lightseagreen;border-radius: 5px;"/>
         </div>
         <!-- 查询结果表格-->
@@ -68,7 +70,7 @@
                         rownumbers: true,
                         rownumWidth: 25,
                         autowidth: true,
-                        multiselect: false,
+                        multiselect: true,
                         pager: "#jqGridPager",
                         jsonReader: {
                             root: "page.list",
@@ -93,6 +95,18 @@
                         datatype: "json",
                         page: 1
                     }).trigger("reloadGrid");
+                });
+            },
+            constractExport:function(event){
+                var constractId=getSelectedRow();
+                if(constractId==''||constractId==null){
+                    return ;
+                }
+                window.location.href="../constract/export/word/"+constractId;
+                layer.open({
+                    type: 0,
+                    title: '合同导出提示信息!',
+                    content: "合同信息导出成功!"
                 });
             }
         }

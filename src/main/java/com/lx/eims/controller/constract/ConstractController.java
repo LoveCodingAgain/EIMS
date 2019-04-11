@@ -4,21 +4,20 @@ import com.lx.eims.entity.contract.Customer;
 import com.lx.eims.entity.data.Data;
 import com.lx.eims.exception.GlobalException;
 import com.lx.eims.service.ConstractService;
+import com.lx.eims.service.ConstractVOService;
 import com.lx.eims.service.CustomerService;
 import com.lx.eims.service.DataService;
-import com.lx.eims.util.DateUtils;
-import com.lx.eims.util.Message;
-import com.lx.eims.util.PageUtils;
-import com.lx.eims.util.ShiroUtils;
+import com.lx.eims.util.*;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +39,20 @@ public class ConstractController {
 
     @Autowired
     private DataService dataService;
+
+    @Autowired
+    private WordUtils wordUtils;
+
+    @Autowired
+    private ConstractVOService constractVOService;
+    /**
+     * 模板路径
+     */
+    private static final String TEMPLATE_PATH= "static/doc/constract_template.docx";
+    /**
+     * 导出文件路径
+     */
+    private static final String FINE_NAME="D:\\constract.docx";
     /**
      * 合同查询页面
      * @return
@@ -139,6 +152,22 @@ public class ConstractController {
             doExport(response.getOutputStream(),constractService.dataList());
         } catch (Exception e) {
             e.getMessage();
+        }
+    }
+
+    /**
+     * 导出单条合同记录
+     * @param constractId
+     * @return
+     */
+    @RequestMapping(value="/export/word/{constractId}")
+    public void exportWord(@PathVariable  Integer constractId, HttpServletResponse response)  {
+        try {
+            response.setContentType("application/msword;charset=UTF-8");
+            response.addHeader("Content-Disposition", "attachment;filename="+ URLEncoder.encode("合同详细信息", "UTF-8") + ".docx");
+            wordUtils.getBuild(TEMPLATE_PATH,constractVOService.getConstarct(constractId),response.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

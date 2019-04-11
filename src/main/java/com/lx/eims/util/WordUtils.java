@@ -24,24 +24,22 @@ public class WordUtils {
         map.put("contractNameSecond", "公司乙");
         map.put("constractType", "已完成");
         WordUtils wordUtils = new WordUtils();
-        wordUtils.getBuild("static/doc/contract_template.docx", map, "D:/testWord.doc");
+        wordUtils.getBuild("static/doc/contract_template.docx", map, null);
     }
     /**
      * 基于模板导出doc文件
      * @param tmpFile
      * @param contentMap
-     * @param exportFile
      * @throws IOException
      */
-    public void getBuild(String tmpFile, Map<String, Object> contentMap, String exportFile) throws IOException {
+    public void getBuild(String tmpFile, Map<String, Object> contentMap, OutputStream out) throws IOException {
         Resource resource = new ClassPathResource(tmpFile);
         InputStream inputStream = null;
         inputStream = resource.getInputStream();
         XWPFDocument document = new XWPFDocument(inputStream);
-        this.replaceInTable(document, contentMap);
-        OutputStream os = new FileOutputStream(exportFile);
-        document.write(os);
-        this.close(os);
+        this.replaceInPara(document, contentMap);
+        document.write(out);
+        this.close(out);
         this.close(inputStream);
     }
 
@@ -139,12 +137,12 @@ public class WordUtils {
     /**
      * 关闭输出流
      *
-     * @param os
+     * @param out
      */
-    private void close(OutputStream os) {
-        if (os != null) {
+    private void close(OutputStream out) {
+        if (out != null) {
             try {
-                os.close();
+                out.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
